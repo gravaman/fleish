@@ -1,0 +1,23 @@
+{
+  "name": "fleish",
+  "version": "1.0.0",
+  "description": "playground",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gravaman/fleish.git"
+  },
+  "keywords": [
+    "doowoP",
+    "fleish"
+  ],
+  "author": "fleish <fleish@doowop.co>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gravaman/fleish/issues"
+  },
+  "homepage": "https://github.com/gravaman/fleish#readme"
+}
