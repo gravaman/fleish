@@ -28,6 +28,25 @@ function isInvalid(str) {
   return true
 }
 
+function isWin() {
+  const winners = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+  ]
+  for (let indices of winners) {
+    if (board[indices[0]] === board[indices[1]] && board[indices[1]] === board[indices[2]] && board[indices[0]] !== ' ') {
+      return true
+    }
+  }
+  return false
+}
+
 let board = Array.from(' '.repeat(9))
 let turn = 'X'
 
@@ -52,6 +71,12 @@ rl.on('line', function(line) {
 
   updateBoard(parseInt(str) - 1)
   displayBoard()
+
+  if (isWin()) {
+    console.log('WINNER WINNER CHICKEN DINNER!')
+    return rl.close()
+  }
+
   rl.prompt()
 }).on('close', function() {
   process.exit(0)
