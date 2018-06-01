@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/gravaman/fleish/issues"
   },
-  "homepage": "https://github.com/gravaman/fleish#readme"
+  "homepage": "https://github.com/gravaman/fleish#readme",
+  "dependencies": {
+    "mathjs": "^4.4.1"
+  }
 }
