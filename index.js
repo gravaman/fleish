@@ -12,7 +12,7 @@ function createGame() {
       return Math.max(this.turn - 1, 0)
     },
     checkComplete: function () {
-      if (this.turn === this.boards.length) {
+      if (this.winner || this.turn === 8) {
         this.complete = true
       }
     },
@@ -123,7 +123,7 @@ function play(game) {
       this.rl.close()
     },
     handleComplete: function() {
-      this.game.winner === 0 ? console.log('DRAW') : console.log('WINNER:', this.game.winner)
+      this.game.winner === null ? console.log('DRAW') : console.log('WINNER:', this.game.winner)
       this.handleExit()
     },
     handleLine: function(line) {
