@@ -7,13 +7,13 @@ function createGame() {
     turn: 0,
     player: 1,
     winner: null,
-    finished: false,
+    complete: false,
     lastTurn: function () {
       return Math.max(this.turn - 1, 0)
     },
-    checkFinished: function () {
+    checkComplete: function () {
       if (this.turn === this.boards.length) {
-        this.finished = true
+        this.complete = true
       }
     },
     getBoard: function () {
@@ -46,9 +46,9 @@ function createGame() {
       let target = this.getTarget(str)
       this.addBoard(target)
       this.checkForWinner()
-      this.checkFinished()
+      this.checkComplete()
       this.printBoard()
-      if (!this.finished) {
+      if (!this.complete) {
         this.turn++
         this.player = this.turn % 2 + 1
       }
@@ -88,9 +88,13 @@ function createGame() {
     printBoard: function () {
       let board = this.getBoard()
       board = board.valueOf()
+      let borderSize = 15
+      let text = ' BOARD '
+      let buffer = Math.trunc((borderSize - text.length) / 2)
 
-      console.log('\n', '*'.repeat(5), 'BOARD', '*'.repeat(5))
-      board.forEach(row => console.log(`  ${ row[0] }  |  ${ row[1] }  |  ${ row[2] }  `))
+      console.log(`\n${ '*'.repeat(buffer) }${ text }${ '*'.repeat(buffer) }`)
+      board.forEach(row => console.log(` ${ row[0] }  |  ${ row[1] }  |  ${ row[2] }  `))
+      console.log(`${ '*'.repeat(borderSize) }`)
     }
   }
 
@@ -102,7 +106,7 @@ function play(game) {
   let cli = {
     rl: null,
     game: game,
-    updatePrompt: function() {
+    setPrompt: function() {
       this.rl.setPrompt(`${ this.game.player }> `)
     },
     checkInput: function(str) {
@@ -118,12 +122,8 @@ function play(game) {
       console.log('goodbye!')
       this.rl.close()
     },
-    handleWin: function() {
-      console.log('WINNER WINNER CHICKEN DINNER:', this.game.winner)
-      this.handleExit()
-    },
-    handleDraw: function() {
-      console.log('DRAW')
+    handleComplete: function() {
+      this.game.winner === 0 ? console.log('DRAW') : console.log('WINNER:', this.game.winner)
       this.handleExit()
     },
     handleLine: function(line) {
@@ -143,15 +143,11 @@ function play(game) {
 
       this.game.makeMove(str)
 
-      if (this.game.winner) {
-        this.handleWin()
+      if (this.game.complete) {
+        this.handleComplete()
       }
 
-      if (this.game.finished) {
-        this.handleDraw()
-      }
-
-      this.updatePrompt(rl, game)
+      this.setPrompt(rl, game)
       this.rl.prompt()
     }
   }
