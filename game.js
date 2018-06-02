@@ -13,8 +13,7 @@ let Game = {
   },
   playerMove: function(input) {
     let target = this.toTarget(input)
-    let board = this.hasStarted() ? this.copyPrior() : this.blankBoard()
-    board.addMove(target)
+    let board = this.buildBoard(target)
     this.state.boards.push(board)
 
     this.statusCheck(this.aiMove)
@@ -23,7 +22,7 @@ let Game = {
 
   },
   statusCheck: function(callback) {
-     
+
     if (callback && !winner) {
       callback()
     }
@@ -34,16 +33,23 @@ let Game = {
     let col = index % 3
     return [row, col]
   }
+  buildBoard: function(target) {
+    let board
+    if (this.hasStarted()) {
+      let prior = this.getPriorBoard()
+      board = new Board({ parentKey: prior.key })
+    } else {
+      board = new Board({ parentKey: '0'.repeat(9) })
+    }
+    board.addMove(target)
+    return board
+  },
   hasStarted: function() {
     return this.state.status !== 'START'
   },
-  copyPrior: function() {
-    let prior = this.boards[this.boards.length]
-    return new Board({ parentKey: prior.key })
+  getPriorBoard: function() {
+    return this.boards[this.boards.length]
   },
-  blankBoard: function() {
-    return new Board({ parentKey: '0'.repeat(9) })
-  }
   play: function() {
     cli.start(this.playerMove)
   }
