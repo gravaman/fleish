@@ -1,62 +1,89 @@
-let readline = require('readline')
-let math = require('mathjs')
+// let readline = require('readline')
+// let math = require('mathjs')
+// let TransitionExaminer = require('./modules/transitionExaminer')
+let Game = require('./game')
 
 function createGame() {
   let game = {
     boards: [math.zeros(3,3)],
     turn: 0,
     player: 1,
+    aiPlayer: 2,
     winner: null,
     complete: false,
-    lastTurn: function () {
+    lastTurn: function lastTurn() {
       return Math.max(this.turn - 1, 0)
     },
-    checkComplete: function () {
+    lastBoard: function lastBoard() {
+      return math.clone(this.boards[this.lastTurn()])
+    },
+    checkComplete: function checkComplete() {
       if (this.winner || this.turn === 8) {
         this.complete = true
       }
     },
-    getBoard: function () {
+    getBoard: function getBoard() {
       return this.boards[this.turn]
     },
-    getTarget: function(str) {
+    getTarget: function getTarget(str) {
       let index = parseInt(str) - 1
       let row = Math.trunc(index / 3)
       let col = index % 3
       return [row, col]
     },
-    isInvalidTarget: function (str) {
+    isInvalidTarget: function isInvalidTarget(str) {
       let [row, col] = this.getTarget(str)
-      let board = this.boards[this.lastTurn()]
+      let board = this.lastBoard()
       let space = board.subset(math.index(row, col))
       return space !== 0
     },
-    checkTarget: function(str) {
+    checkTarget: function checkTarget(str) {
       if (this.isInvalidTarget(str)) {
         throw `space already selected: ${ str }`
       }
     },
-    addBoard: function (target) {
+    addBoard: function addBoard(target) {
       let [row, col] = target
-      let board = math.clone(this.boards[this.lastTurn()])
+      let board = this.lastBoard()
       board.subset(math.index(row, col), this.player)
       this.boards[this.turn] = board
     },
-    makeMove: function (str) {
+    playerMove: function playerMove(str) {
       let target = this.getTarget(str)
       this.addBoard(target)
+      this.checkStatus()
+      this.aiMove()
+    },
+    aiMove: function aiMove() {
+      let board = this.lastBoard()
+      let parentArr = math.flatten(board).valueOf()
+      let parentKey = parentArr.join('')
+      TransitionExaminer.findBest(this.aiPlayer, parentKey, (err, best) => {
+        if (err) {
+          return console.error(err)
+        }
+        let arr = best.key.split('').map(letter => Number(letter))
+        let updatedBoard = math.matrix([
+          math.subset(arr, math.index(math.range(0,3))),
+          math.subset(arr, math.index(math.range(3,6))),
+          math.subset(arr, math.index(math.range(6,9)))
+        ])
+        this.boards[this.turn] = updatedBoard
+        this.checkStatus()
+      })
+    },
+    checkStatus: function checkStatus() {
       this.checkForWinner()
       this.checkComplete()
       this.printBoard()
-      if (!this.complete) {
-        this.turn++
-        this.player = this.turn % 2 + 1
+      if (this.complete) {
+        return
       }
+      this.turn++
     },
-    checkForWinner: function () {
+    checkForWinner: function checkForWinner() {
       let board = this.getBoard()
       board = board.valueOf()
-
       for (let i = 0; i < 3; i++) {
         let row = board[i]
         let col = [
@@ -65,7 +92,7 @@ function createGame() {
           board[2][i]
         ]
         if (this.isWinner(row) || this.isWinner(col)) {
-          this.winner = this.player
+          this.winner = this.turn % 2 + 1
           return
         }
       }
@@ -78,14 +105,14 @@ function createGame() {
       ]
 
       if (this.isWinner(diagonal1) || this.isWinner(diagonal2)) {
-        this.winner = this.player
+        this.winner = this.turn % 2 + 1
       }
     },
-    isWinner: function (arr) {
-      let hits = math.filter(arr, el => el === this.player)
+    isWinner: function isWinner(arr) {
+      let hits = math.filter(arr, el => el === (this.turn % 2 + 1))
       return hits.length === 3
     },
-    printBoard: function () {
+    printBoard: function printBoard() {
       let board = this.getBoard()
       board = board.valueOf()
       let borderSize = 15
@@ -106,27 +133,27 @@ function play(game) {
   let cli = {
     rl: null,
     game: game,
-    setPrompt: function() {
+    setPrompt: function setPrompt() {
       this.rl.setPrompt(`${ this.game.player }> `)
     },
-    checkInput: function(str) {
+    checkInput: function checkInput(str) {
       if (!this.validEntry(str)) {
         throw `invalid entry: ${ str }`
       }
       this.game.checkTarget(str)
     },
-    validEntry: function(str) {
+    validEntry: function validEntry(str) {
       return /[1-9]|(exit)/.test(str)
     },
-    handleExit: function() {
+    handleExit: function handleExit() {
       console.log('goodbye!')
       this.rl.close()
     },
-    handleComplete: function() {
+    handleComplete: function handleComplete() {
       this.game.winner === null ? console.log('DRAW') : console.log('WINNER:', this.game.winner)
       this.handleExit()
     },
-    handleLine: function(line) {
+    handleLine: function handleLine(line) {
       let str = line.trim()
 
       if (str === 'exit') {
@@ -141,13 +168,12 @@ function play(game) {
         return
       }
 
-      this.game.makeMove(str)
+      this.game.playerMove(str)
 
       if (this.game.complete) {
         this.handleComplete()
       }
 
-      this.setPrompt(rl, game)
       this.rl.prompt()
     }
   }
@@ -161,5 +187,4 @@ function play(game) {
 }
 
 // main execution
-let game = createGame()
-play(game)
+Game.play()
