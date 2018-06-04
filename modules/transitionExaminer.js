@@ -4,16 +4,27 @@ let TransitionExaminer = {
   findNext: function(player, key, cb) {
     this.availableTransitions(player, key, function(err, available) {
       if (err) {
-        console.error(err)
-        return cb(err, available)
+        return console.error(err)
       }
 
       available.sort(function(a, b) {
         return a.probability - b.probability
       })
       let [best] = available.slice(-1)
-      let board = new Board({ key: best.key, probability: best.probability })
-      cb(board)
+
+      // get or create
+      Board.findOne({ key: best.key }, function(err, board) {
+        if (err) {
+          return console.error(err)
+        }
+        if (board) {
+          return cb(board)
+        }
+        console.log('could not find!')
+        board = new Board({ key: best.key, probability: best.probability })
+        board.save()
+        return cb(board)
+      })
     })
   },
   availableTransitions: function(player, key, cb) {

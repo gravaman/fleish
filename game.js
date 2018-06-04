@@ -22,7 +22,13 @@ let Game = {
       pending.winner = this.winnerCheck(PLAYER_KEY, pending.boards[pending.boards.length - 1])
 
       this.state = pending
-      this.statusCheck(this.aiMove.bind(this))
+
+      let status = this.statusCheck()
+      if (status === 'WIN' || status === 'DRAW') {
+        this.saveBoard(cli.handleClose)
+      } else {
+        this.aiMove()
+      }
     })
   },
   aiMove: function() {
@@ -34,7 +40,39 @@ let Game = {
       pending.winner = this.winnerCheck(AI_KEY, pending.boards[pending.boards.length - 1])
 
       this.state = pending
-      this.statusCheck(this.promptOpponent)
+      let status = this.statusCheck()
+      if (status === 'WIN' || status === 'DRAW') {
+        this.saveBoard(cli.handleClose)
+      } else {
+        this.promptOpponent()
+      }
+    })
+  },
+  saveBoard: function(callback) {
+    let board
+    console.log('WINNER WINNER CHICKEN DINNER:', this.state.winner)
+    if (this.state.winner === AI_KEY) {
+      board = this.state.boards[this.state.boards.length - 1]
+      board.probability = 1
+    } else {
+      board = this.state.boards[this.state.boards.length - 2]
+      board.probability = 0
+    }
+
+    Board.findOne({ key: board.key }, function(err, res) {
+      if (err) {
+        return console.error(err)
+      }
+
+      if (res) {
+        res.update({ probability: board.probability }, () => {
+          return callback()
+        })
+      } else {
+        board.save().then(board => {
+          return callback()
+        })
+      }
     })
   },
   copyState: function() {
@@ -54,9 +92,19 @@ let Game = {
     let prior = boards[i - 1]
     prior.probability = prior.probability + ALPHA * (last.probability - prior.probability)
 
-    prior.save(function (err, board) {
+    Board.findOne({ key: prior.key }, function(err, board) {
       if (err) {
         return console.error(err)
+      }
+
+      if (board) {
+        board.update({ probability: prior.probability }, () => {
+          return console.log('updated!!!!')
+        })
+      } else {
+        prior.save().then(board => {
+          return
+        })
       }
     })
   },
@@ -91,18 +139,12 @@ let Game = {
   statusCheck: function(callback) {
     cli.display(this.currentKey())
     if (this.state.winner) {
-      console.log('WINNER WINNER CHICKEN DINNER:', this.state.winner)
-      return cli.handleClose()
+      return 'WIN'
     }
-
-    if (this.state.boards.length === 10) {
-      console.log('DRAWWWWW')
-      return cli.handleClose()
+    if (this.state.boards.length === '10') {
+      return 'DRAW'
     }
-
-    if (callback) {
-      callback()
-    }
+    return null
   },
   toTarget: function(str) {
     let index = parseInt(str) - 1
