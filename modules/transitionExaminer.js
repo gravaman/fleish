@@ -1,8 +1,8 @@
 let Board = require('../board')
 
 let TransitionExaminer = {
-  findBest: function findBest(player, parentKey, cb) {
-    this.availableTransitions(player, parentKey, function(err, available) {
+  findNext: function(player, key, cb) {
+    this.availableTransitions(player, key, function(err, available) {
       if (err) {
         console.error(err)
         return cb(err, available)
@@ -12,13 +12,14 @@ let TransitionExaminer = {
         return a.probability - b.probability
       })
       let [best] = available.slice(-1)
-      cb(null, best)
+      let board = new Board({ key: best.key, probability: best.probability })
+      cb(board)
     })
   },
-  availableTransitions: function availableTransitions(player, parentKey, cb) {
-    let transitions = this.buildTransitions(player, parentKey)
+  availableTransitions: function(player, key, cb) {
+    let transitions = this.buildTransitions(player, key)
     let allKeys = transitions.map(move => move.key)
-    Board.find({ parentKey: parentKey, key: { $in: allKeys }}, function(err, boards) {
+    Board.find({ key: { $in: allKeys }}, function(err, boards) {
       if (err) {
         console.error(err)
         return cb(err, boards)
@@ -26,7 +27,7 @@ let TransitionExaminer = {
 
       boards.forEach(board => {
         transitions.forEach(move => {
-          if (move.parentKey == board.parentKey && move.key == board.key) {
+          if (move.key == board.key) {
             move.probability = board.probability
           }
         })
@@ -41,18 +42,17 @@ let TransitionExaminer = {
       cb(null, transitions)
     })
   },
-  buildTransitions: function buildTransitions(player, parentKey) {
+  buildTransitions: function(player, key) {
     let transitionKeys = []
-    for (let i = 0; i < parentKey.length; i++) {
-      let value = Number(parentKey[i])
+    for (let i = 0; i < key.length; i++) {
+      let value = Number(key[i])
       if (value === 0) {
-        let prefix = parentKey.slice(0, i)
-        let postfix = parentKey.slice(i + 1)
-        let key = prefix.concat(player, postfix)
+        let prefix = key.slice(0, i)
+        let postfix = key.slice(i+1)
+        let updated = prefix.concat(player, postfix)
 
         transitionKeys.push({
-          parentKey: parentKey,
-          key: key,
+          key: updated,
           probability: null
         })
       }

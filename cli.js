@@ -10,6 +10,9 @@ let Cli = {
     this.rl.setPrompt(':) ')
     this.rl.prompt()
   },
+  prompt: function() {
+    this.rl.prompt()
+  },
   handleLine: function(line, callback) {
     line = line.trim()
     if (callback) {
@@ -20,6 +23,20 @@ let Cli = {
   handleClose: function() {
     console.log('program shutting down...\n')
     process.exit(0)
+  },
+  display: function(board) {
+    console.log('THE BAORD!', board)
+    let borderSize = 15
+    let text = ' BOARD '
+    let buffer = Math.trunc((borderSize - text.length) / 2)
+    let rows = [
+      [ board[0], board[1], board[2] ],
+      [ board[3], board[4], board[5] ],
+      [ board[6], board[7], board[8] ]
+    ]
+    console.log(`\n${ '*'.repeat(buffer) }${ text }${ '*'.repeat(buffer) }`)
+    rows.forEach(row => console.log(` ${ row[0] }  |  ${ row[1] }  |  ${ row[2] }  `))
+    console.log(`${ '*'.repeat(borderSize) }`)
   },
   rl: null
 }
