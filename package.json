@@ -4,8 +4,9 @@
   "description": "playground",
   "main": "server/index.js",
   "scripts": {
-    "start": "node server/index.js",
-    "test": "node server/tests/index.js"
+    "start": "./scripts/build.sh production",
+    "dev": "./scripts/build.sh dev",
+    "test": "./scripts/build.sh test"
   },
   "repository": {
     "type": "git",
