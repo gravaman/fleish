@@ -21,7 +21,6 @@ let Cli = {
     }
   },
   handleClose: function() {
-    console.log('program shutting down...\n')
     process.exit(0)
   },
   display: function(board) {

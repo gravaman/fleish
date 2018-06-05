@@ -1,8 +1,8 @@
 let Board = require('../board')
 
-let TransitionExaminer = {
+let MoveExaminer = {
   findNext: function(player, key, cb) {
-    this.availableTransitions(player, key, function(err, available) {
+    this.availableMoves(player, key, function(err, available) {
       if (err) {
         return console.error(err)
       }
@@ -27,9 +27,9 @@ let TransitionExaminer = {
       })
     })
   },
-  availableTransitions: function(player, key, cb) {
-    let transitions = this.buildTransitions(player, key)
-    let allKeys = transitions.map(move => move.key)
+  availableMoves: function(player, key, cb) {
+    let moves = this.buildMoves(player, key)
+    let allKeys = moves.map(move => move.key)
     Board.find({ key: { $in: allKeys }}, function(err, boards) {
       if (err) {
         console.error(err)
@@ -37,24 +37,24 @@ let TransitionExaminer = {
       }
 
       boards.forEach(board => {
-        transitions.forEach(move => {
+        moves.forEach(move => {
           if (move.key == board.key) {
             move.probability = board.probability
           }
         })
       })
 
-      transitions.forEach(move => {
+      moves.forEach(move => {
         if (move.probability == null) {
           move.probability = 0.5
         }
       })
 
-      cb(null, transitions)
+      cb(null, moves)
     })
   },
-  buildTransitions: function(player, key) {
-    let transitionKeys = []
+  buildMoves: function(player, key) {
+    let moveKeys = []
     for (let i = 0; i < key.length; i++) {
       let value = Number(key[i])
       if (value === 0) {
@@ -62,14 +62,14 @@ let TransitionExaminer = {
         let postfix = key.slice(i+1)
         let updated = prefix.concat(player, postfix)
 
-        transitionKeys.push({
+        moveKeys.push({
           key: updated,
           probability: null
         })
       }
     }
-    return transitionKeys
+    return moveKeys
   }
 }
 
-module.exports = TransitionExaminer
+module.exports = MoveExaminer

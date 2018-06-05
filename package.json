@@ -22,7 +22,6 @@
   },
   "homepage": "https://github.com/gravaman/fleish#readme",
   "dependencies": {
-    "mathjs": "^4.4.1",
     "mongoose": "^5.1.3"
   }
 }

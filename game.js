@@ -1,6 +1,5 @@
-let math = require('mathjs')
 let Board = require('./board')
-let TransitionExaminer = require('./modules/transitionExaminer')
+let MoveExaminer = require('./modules/moveExaminer')
 
 const PLAYER_KEY = 1
 const AI_KEY = 2
@@ -22,7 +21,7 @@ let Game = {
   },
   aiMove: function() {
     let lastBoard = this.state.boards[this.state.boards.length - 1]
-    TransitionExaminer.findNext(AI_KEY, lastBoard.key, board => this.move(AI_KEY, board))
+    MoveExaminer.findNext(AI_KEY, lastBoard.key, board => this.move(AI_KEY, board))
   },
   move: function(player, board) {
     let pending = this.copyState()
@@ -34,12 +33,14 @@ let Game = {
     this.updateProbabilities(pending.boards, () => {
       if (this.state.winner) {
         this.state.cli.display(board.key)
-        return console.log('winner:', this.state.winner)
+        console.log('winner:', this.state.winner)
+        return this.state.cli.handleClose()
       }
 
       if (pending.turn === 9) {
         this.state.cli.display(board.key)
-        return console.log('draw')
+        console.log('draw')
+        return this.state.cli.handleClose()
       }
 
       if (player === PLAYER_KEY) {
