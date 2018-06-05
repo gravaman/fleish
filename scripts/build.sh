@@ -11,16 +11,16 @@ then
 elif [[ "$ENV_TYPE" = "dev" ]]
 then
   START_PATH="$SERVER_PATH"
-  NPM_CONFIG_PORT=$LOCAL_PORT
+  export PORT=$LOCAL_PORT
 elif [[ "$ENV_TYPE" = "production" ]]
 then
   START_PATH="$SERVER_PATH"
 fi
 
 echo "environment: $ENV_TYPE"
-if [[ "$NPM_CONFIG_PORT" ]]
+if [[ "$PORT" ]]
 then
-  echo "port: $NPM_CONFIG_PORT"
+  echo "port: $PORT"
 fi
 
 node $START_PATH
