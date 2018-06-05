@@ -1,12 +1,13 @@
 let readline = require('readline')
 
 let Cli = {
-  start: function (lineCallback) {
+  start: function (board, lineCallback) {
     this.rl = readline.createInterface(process.stdin, process.stdout)
 
     this.rl.on('line', line => this.handleLine(line, lineCallback))
       .on('close', this.handleClose)
 
+    this.display(board)
     this.rl.setPrompt(':) ')
     this.rl.prompt()
   },
@@ -18,14 +19,12 @@ let Cli = {
     if (callback) {
       callback(line)
     }
-    this.rl.prompt()
   },
   handleClose: function() {
     console.log('program shutting down...\n')
     process.exit(0)
   },
   display: function(board) {
-    console.log('THE BAORD!', board)
     let borderSize = 15
     let text = ' BOARD '
     let buffer = Math.trunc((borderSize - text.length) / 2)

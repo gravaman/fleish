@@ -1,64 +1,106 @@
 let math = require('mathjs')
 let Board = require('./board')
-let Cli = require('./cli')
 let TransitionExaminer = require('./modules/transitionExaminer')
 
-let cli = Object.create(Cli)
 const PLAYER_KEY = 1
 const AI_KEY = 2
-const ALPHA = 0.1
+const ALPHA = 0.5
 
 let Game = {
   state: {
     boards: [new Board({ key: '0'.repeat(9) })],
-    winner: null
+    winner: null,
+    turn: 0,
+    cli: null
+  },
+  setState: function(data) {
+    this.state = Object.assign(this.state, data)
   },
   playerMove: function(input) {
     let target = this.toTarget(input)
-    this.nextBoard(PLAYER_KEY, target, board => {
-      let pending = this.copyState()
-      pending.boards.push(board)
-      this.updateProbabilities(pending.boards)
-      pending.winner = this.winnerCheck(PLAYER_KEY, pending.boards[pending.boards.length - 1])
-
-      this.state = pending
-
-      let status = this.statusCheck()
-      if (status === 'WIN' || status === 'DRAW') {
-        this.saveBoard(cli.handleClose)
-      } else {
-        this.aiMove()
-      }
-    })
+    this.nextBoard(PLAYER_KEY, target, board => this.move(PLAYER_KEY, board))
   },
   aiMove: function() {
     let lastBoard = this.state.boards[this.state.boards.length - 1]
-    TransitionExaminer.findNext(AI_KEY, lastBoard.key, board => {
-      let pending = this.copyState()
-      pending.boards.push(board)
-      this.updateProbabilities(pending.boards)
-      pending.winner = this.winnerCheck(AI_KEY, pending.boards[pending.boards.length - 1])
+    TransitionExaminer.findNext(AI_KEY, lastBoard.key, board => this.move(AI_KEY, board))
+  },
+  move: function(player, board) {
+    let pending = this.copyState()
+    pending.boards.push(board)
+    pending.winner = this.winnerCheck(player, pending.boards[pending.boards.length - 1])
+    pending.turn++
+    this.setState(pending)
 
-      this.state = pending
-      let status = this.statusCheck()
-      if (status === 'WIN' || status === 'DRAW') {
-        this.saveBoard(cli.handleClose)
-      } else {
-        this.promptOpponent()
+    this.updateProbabilities(pending.boards, () => {
+      if (this.state.winner) {
+        this.state.cli.display(board.key)
+        return console.log('winner:', this.state.winner)
       }
+
+      if (pending.turn === 9) {
+        this.state.cli.display(board.key)
+        return console.log('draw')
+      }
+
+      if (player === PLAYER_KEY) {
+        return this.aiMove()
+      }
+
+      this.state.cli.display(board.key)
+      return this.promptOpponent()
     })
   },
-  saveBoard: function(callback) {
-    let board
-    console.log('WINNER WINNER CHICKEN DINNER:', this.state.winner)
-    if (this.state.winner === AI_KEY) {
-      board = this.state.boards[this.state.boards.length - 1]
-      board.probability = 1
+  copyState: function() {
+    let boards = this.state.boards.map(board => new Board({ key: board.key, probability: board.probability }))
+
+    return ({
+      boards: boards,
+      winner: this.state.winner,
+      turn: this.state.turn
+    })
+  },
+  updateProbabilities: function(boards, callback) {
+    let i = boards.length - 1
+    let last = boards[i]
+    let prior = boards[i - 2]
+    let probability
+
+    if (this.hasWinner()) {
+      if (this.state.winner === AI_KEY) {
+        probability = 1.0
+      }
+
+      if (this.state.winner === PLAYER_KEY) {
+        prior = boards[i - 1]
+        probability = 0.0
+      }
     } else {
-      board = this.state.boards[this.state.boards.length - 2]
-      board.probability = 0
+      if (this.isPlayerTurn()) {
+        return callback()
+      }
+
+      if (this.isAiTurn()) {
+        probability = last.probability
+      }
     }
 
+    if (prior) {
+      let chg = parseFloat(prior.probability) + ALPHA * (probability - parseFloat(prior.probability))
+      prior.probability = chg
+      return this.updateOrSave(prior, callback)
+    }
+    return callback()
+  },
+  hasWinner: function() {
+    return this.state.winner === AI_KEY || this.state.winner === PLAYER_KEY
+  },
+  isPlayerTurn: function() {
+    return this.state.boards.length % 2 === 0
+  },
+  isAiTurn: function() {
+    return !this.isPlayerTurn()
+  },
+  updateOrSave: function(board, callback) {
     Board.findOne({ key: board.key }, function(err, res) {
       if (err) {
         return console.error(err)
@@ -66,45 +108,19 @@ let Game = {
 
       if (res) {
         res.update({ probability: board.probability }, () => {
-          return callback()
+          // console.log(`board_id: ${ res._id } probability updated to ${ board.probability.toString() }`)
+          if (callback) {
+            return callback()
+          }
         })
       } else {
-        board.save().then(board => {
-          return callback()
-        })
-      }
-    })
-  },
-  copyState: function() {
-    let boards = this.state.boards.map(board => {
-      return new Board({ key: board.key, probability: board.probability })
-    })
-
-    return ({
-      boards: boards,
-      winner: this.state.winner,
-      status: this.state.status
-    })
-  },
-  updateProbabilities: function(boards) {
-    let i = boards.length - 1
-    let last = boards[i]
-    let prior = boards[i - 1]
-    prior.probability = prior.probability + ALPHA * (last.probability - prior.probability)
-
-    Board.findOne({ key: prior.key }, function(err, board) {
-      if (err) {
-        return console.error(err)
-      }
-
-      if (board) {
-        board.update({ probability: prior.probability }, () => {
-          return console.log('updated!!!!')
-        })
-      } else {
-        prior.save().then(board => {
-          return
-        })
+        board.save()
+          .then(res => {
+            console.log(`saved board: ${ res }`)
+            if (callback) {
+              return callback()
+            }
+          })
       }
     })
   },
@@ -134,17 +150,7 @@ let Game = {
     return hits.length === 3
   },
   promptOpponent: function() {
-    cli.prompt()
-  },
-  statusCheck: function(callback) {
-    cli.display(this.currentKey())
-    if (this.state.winner) {
-      return 'WIN'
-    }
-    if (this.state.boards.length === '10') {
-      return 'DRAW'
-    }
-    return null
+    this.state.cli.prompt()
   },
   toTarget: function(str) {
     let index = parseInt(str) - 1
@@ -170,15 +176,17 @@ let Game = {
     let board = this.state.boards[this.state.boards.length - 1]
     return board.key
   },
-  nextKey(player, target) {
+  nextKey: function(player, target) {
     // player 1: [2,3] => "000001000"
     let [row, col] = target
     let position = row * 3 + col
     let currentKey = this.currentKey()
     return currentKey.slice(0, position) + player.toString() + currentKey.slice(position + 1)
   },
-  play: function() {
-    cli.start(this.playerMove.bind(this))
+  play: function(cli) {
+    this.setState({ cli: cli })
+    let startBoard = this.state.boards[0]
+    cli.start(startBoard.key, this.playerMove.bind(this))
   }
 }
 
