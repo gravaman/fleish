@@ -23,4 +23,5 @@ then
   echo "port: $PORT"
 fi
 
+npx webpack
 node $START_PATH
