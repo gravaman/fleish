@@ -1,4 +1,4 @@
-let db = require('./db')
+let db = require('../db/db')
 
 let schema = db.Schema({
   key: { type: String, required: true },

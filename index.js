@@ -1,5 +1,5 @@
-let Cli = require('./cli')
-let Game = require('./game')
+let Cli = require('./modules/cli')
+let Game = require('./modules/game')
 
 // main execution
 let cli = Object.create(Cli)

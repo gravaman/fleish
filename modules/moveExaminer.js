@@ -1,4 +1,4 @@
-let Board = require('../board')
+let Board = require('../models/board')
 
 let MoveExaminer = {
   findNext: function(player, key, cb) {
@@ -20,9 +20,7 @@ let MoveExaminer = {
         if (board) {
           return cb(board)
         }
-        console.log('could not find!')
         board = new Board({ key: best.key, probability: best.probability })
-        board.save()
         return cb(board)
       })
     })

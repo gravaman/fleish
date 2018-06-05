@@ -1,5 +1,5 @@
-let Board = require('./board')
-let MoveExaminer = require('./modules/moveExaminer')
+let MoveExaminer = require('./moveExaminer')
+let Board = require('../models/board')
 
 const PLAYER_KEY = 1
 const AI_KEY = 2
@@ -109,7 +109,6 @@ let Game = {
 
       if (res) {
         res.update({ probability: board.probability }, () => {
-          // console.log(`board_id: ${ res._id } probability updated to ${ board.probability.toString() }`)
           if (callback) {
             return callback()
           }
@@ -117,7 +116,7 @@ let Game = {
       } else {
         board.save()
           .then(res => {
-            console.log(`saved board: ${ res }`)
+            console.log(`saved new board: ${ res.key }`)
             if (callback) {
               return callback()
             }
