@@ -15,32 +15,39 @@ class Game extends Component {
     }
   }
 
-  handleClick(i) {
+  get squares() {
+    const history = this.state.history
+    const current = history[this.state.stepNumber]
+    return current.squares
+  }
+
+  copySquares() {
     const history = this.state.history.slice(0, this.state.stepNumber + 1)
     const current = history[history.length - 1]
-    const squares = current.squares.slice()
+    return current.squares.slice()
+  }
+
+  handleClick(i) {
+    const squares = this.copySquares()
     if (utilities.calculateWinner(squares) || squares[i]) {
       return
     }
 
     squares[i] = this.state.xIsNext ? 'X' : 'O'
     this.setState({
-      history: history.concat([
+      history: this.state.history.concat([
         { squares: squares }
       ]),
-      stepNumber: history.length,
+      stepNumber: this.state.history.length,
       xIsNext: !this.state.xIsNext
     })
   }
 
   render() {
-    const history = this.state.history
-    const current = history[this.state.stepNumber]
-
     return(
       <div className="game">
         <Board
-          squares={ current.squares }
+          squares={ this.squares }
           onClick={ i => this.handleClick(i) }
         />
       </div>
