@@ -11,7 +11,9 @@ class Game extends Component {
         { squares: Array(9).fill(null) }
       ],
       stepNumber: 0,
-      winner: null
+      winner: null,
+      playerImg: '/images/mg-hawk-1955.jpg',
+      aiImg: '/images/willys-jeep.jpeg'
     }
   }
 
@@ -75,6 +77,8 @@ class Game extends Component {
       <div className="game">
         <Board
           squares={ this.squares }
+          playerImg={ this.state.playerImg }
+          aiImg={ this.state.aiImg }
           onClick={ i => this.handleClick(i) }
         />
       </div>

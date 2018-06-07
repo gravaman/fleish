@@ -4,12 +4,21 @@ import './Board.less'
 
 class Board extends Component {
   renderSquare(i) {
+    const player = this.props.squares[i]
     return (
       <Square
-        value={ this.props.squares[i] }
+        value={ player }
         onClick={ () => this.props.onClick(i) }
+        imgUrl={ this.playerToUrl(player) }
       />
     )
+  }
+
+  playerToUrl(player) {
+    if (!player) {
+      return null
+    }
+    return player === 1 ? this.props.playerImg : this.props.aiImg
   }
 
   render() {
