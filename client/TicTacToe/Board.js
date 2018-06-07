@@ -15,10 +15,13 @@ class Board extends Component {
   }
 
   playerToUrl(player) {
+    const playerImg = '/images/mg-hawk-1955.jpg'
+    const aiImg = '/images/willys-jeep.jpeg'
+
     if (!player) {
       return null
     }
-    return player === 1 ? this.props.playerImg : this.props.aiImg
+    return player === 1 ? playerImg : aiImg
   }
 
   render() {
