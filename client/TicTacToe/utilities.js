@@ -25,11 +25,12 @@ let utilities = {
   keyToSquares: function(key) {
     return key.split('').map(move => Number(move) === 0 ? null : Number(move))
   },
-  sendMove: function(priorSquares, currentSquares, player) {
+  sendMove: function(player, priorSquares, startSquares, endSquares) {
     let priorKey = utilities.squaresToKey(priorSquares)
-    let currentKey = utilities.squaresToKey(currentSquares)
+    let startKey = startSquares ? utilities.squaresToKey(startSquares) : null
+    let endKey = utilities.squaresToKey(endSquares)
     let url = '/move'
-    let data = JSON.stringify({ priorKey, currentKey, player })
+    let data = JSON.stringify({ player, priorKey, startKey, endKey })
     let opts = {
       method: 'POST',
       body: data,

@@ -1,15 +1,13 @@
 let db = require('../db/db')
 
 let boardSchema = db.Schema({
-  player: { type: Number, required: true },
   key: { type: String, required: true },
   probability: { type: db.Schema.Types.Decimal128, default: 0.5 }
 }, { timestamps: true })
 
-boardSchema.statics.findOrCreate = function(props) {
-  let { player, key } = props
+boardSchema.statics.findOrCreate = function({ key }) {
   return new Promise(function(resolve, reject) {
-    Board.findOne({ player, key }, function(err, res) {
+    Board.findOne({ key }, function(err, res) {
       if (err) {
         return reject(err)
       }
@@ -18,7 +16,7 @@ boardSchema.statics.findOrCreate = function(props) {
         return resolve(res)
       }
 
-      Board.create({ player, key })
+      Board.create({ key })
         .then(board => resolve(board))
     })
   })

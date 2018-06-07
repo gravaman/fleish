@@ -27,8 +27,8 @@ class Game extends Component {
 
   handleClick(i) {
     const history = this.state.history.slice(0, this.state.stepNumber + 1)
-    const prior = history[history.length - 1]
-    const playerSquares = prior.squares.slice()
+    const start = history[history.length - 1]
+    const playerSquares = start.squares.slice()
 
     // do nothing if square already played or game is over
     if (playerSquares[i] || this.state.winner) {
@@ -36,14 +36,17 @@ class Game extends Component {
     }
 
     // take player move
+    const startSquares = playerSquares.slice()
     playerSquares[i] = 1
-    const priorSquares = prior.squares.slice()
-    utilities.sendMove(priorSquares, playerSquares, 1)
+    const prior = history[history.length - 2]
+    const priorSquares = prior ? prior.squares.slice() : []
+
+    utilities.sendMove(1, priorSquares, startSquares, playerSquares)
 
     // check for winner
-    if (utilities.calculateWinner(playerSquares)) {
+    let winner = utilities.calculateWinner(playerSquares)
+    if (winner) {
       // skip ai turn if player win
-      let winner = utilities.calculateWinner(playerSquares)
       return this.setState({
         history: this.state.history.concat({ squares: playerSquares }),
         stepNumber: this.state.history.length,
@@ -63,7 +66,7 @@ class Game extends Component {
           ]),
           stepNumber: stepNumber,
           winner: winner
-        }, () => utilities.sendMove(playerSquares, aiSquares, 2))
+        }, () => utilities.sendMove(2, startSquares, playerSquares, aiSquares))
       })
   }
 
