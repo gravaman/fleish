@@ -10,7 +10,8 @@ class Game extends Component {
       history: [
         { squares: Array(9).fill(null) }
       ],
-      stepNumber: 0
+      stepNumber: 0,
+      winner: null
     }
   }
 
@@ -26,31 +27,43 @@ class Game extends Component {
 
   handleClick(i) {
     const history = this.state.history.slice(0, this.state.stepNumber + 1)
-    const current = history[history.length - 1]
-    const playerSquares = current.squares.slice()
+    const prior = history[history.length - 1]
+    const playerSquares = prior.squares.slice()
 
-    if (playerSquares[i]) {
+    // do nothing if square already played or game is over
+    if (playerSquares[i] || this.state.winner) {
       return
     }
 
-    if (utilities.calculateWinner(playerSquares)) {
-      // const prior = history[history.length - 2]
-      // const priorSquares = prior.squares.slice()
-      // utilities.updateMove(priorSquares)
-      return
-    }
-
+    // take player move
     playerSquares[i] = 1
-    utilities.getMove(playerSquares)
+    const priorSquares = prior.squares.slice()
+    utilities.sendMove(priorSquares, playerSquares, 1)
+
+    // check for winner
+    if (utilities.calculateWinner(playerSquares)) {
+      // skip ai turn if player win
+      let winner = utilities.calculateWinner(playerSquares)
+      return this.setState({
+        history: this.state.history.concat({ squares: playerSquares }),
+        stepNumber: this.state.history.length,
+        winner: winner
+      })
+    }
+
+    // take ai move
+    utilities.getMove(playerSquares, 2)
       .then(aiSquares => {
-        console.log('get move response:', aiSquares)
+        let winner = utilities.calculateWinner(aiSquares)
+        let stepNumber = this.state.history.length + 1
         this.setState({
           history: this.state.history.concat([
             { squares: playerSquares },
             { squares: aiSquares }
           ]),
-          stepNumber: this.state.history.length + 1
-        })
+          stepNumber: stepNumber,
+          winner: winner
+        }, () => utilities.sendMove(playerSquares, aiSquares, 2))
       })
   }
 

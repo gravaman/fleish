@@ -25,27 +25,28 @@ let utilities = {
   keyToSquares: function(key) {
     return key.split('').map(move => Number(move) === 0 ? null : Number(move))
   },
-  updateMove: function(squares) {
-    let key = utilities.squaresToKey(squares)
-    let url = `/move/${ key }`
-    let data = JSON.stringify({ winner: 1 })
+  sendMove: function(priorSquares, currentSquares, player) {
+    let priorKey = utilities.squaresToKey(priorSquares)
+    let currentKey = utilities.squaresToKey(currentSquares)
+    let url = '/move'
+    let data = JSON.stringify({ priorKey, currentKey, player })
     let opts = {
-      method: 'PUT',
-      body: data
+      method: 'POST',
+      body: data,
+      headers: { 'Content-Type': 'application/json' }
     }
-    return fetch('/move', opts).then(res => {})
+    return fetch(url, opts).then(res => console.log('send move status:', res.status))
   },
-  getMove: function(squares) {
+  getMove: function(squares, player) {
     squares = squares.slice()
     let key = squares.map( square => !square ? 0 : square).join('')
-    return fetch(`/move/${ key }`).then(res => {
-      console.log('the response:', res)
+    return fetch(`/move/${ player }/${ key }`).then(res => {
       if (res.status !== 200) {
-        console.error('error getting move:', res.status, res.statusText)
-        return
+        return console.error('error getting move:', res.status)
       }
       return res.text()
-    }).then(key => utilities.keyToSquares(key))
+    })
+    .then(key => utilities.keyToSquares(key))
   }
 }
 
