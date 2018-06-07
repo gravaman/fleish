@@ -10,8 +10,7 @@ class Game extends Component {
       history: [
         { squares: Array(9).fill(null) }
       ],
-      stepNumber: 0,
-      xIsNext: true
+      stepNumber: 0
     }
   }
 
@@ -21,26 +20,38 @@ class Game extends Component {
     return current.squares
   }
 
-  copySquares() {
-    const history = this.state.history.slice(0, this.state.stepNumber + 1)
-    const current = history[history.length - 1]
-    return current.squares.slice()
+  get isPlayerTurn() {
+    return this.state.stepNumber % 2 === 0
   }
 
   handleClick(i) {
-    const squares = this.copySquares()
-    if (utilities.calculateWinner(squares) || squares[i]) {
+    const history = this.state.history.slice(0, this.state.stepNumber + 1)
+    const current = history[history.length - 1]
+    const playerSquares = current.squares.slice()
+
+    if (playerSquares[i]) {
       return
     }
 
-    squares[i] = this.state.xIsNext ? 'X' : 'O'
-    this.setState({
-      history: this.state.history.concat([
-        { squares: squares }
-      ]),
-      stepNumber: this.state.history.length,
-      xIsNext: !this.state.xIsNext
-    })
+    if (utilities.calculateWinner(playerSquares)) {
+      // const prior = history[history.length - 2]
+      // const priorSquares = prior.squares.slice()
+      // utilities.updateMove(priorSquares)
+      return
+    }
+
+    playerSquares[i] = 1
+    utilities.getMove(playerSquares)
+      .then(aiSquares => {
+        console.log('get move response:', aiSquares)
+        this.setState({
+          history: this.state.history.concat([
+            { squares: playerSquares },
+            { squares: aiSquares }
+          ]),
+          stepNumber: this.state.history.length + 1
+        })
+      })
   }
 
   render() {

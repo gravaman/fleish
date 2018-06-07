@@ -17,6 +17,35 @@ let utilities = {
       }
     }
     return null
+  },
+  squaresToKey: function(squares) {
+    squares = squares.slice()
+    return squares.map( square => !square ? 0 : square).join('')
+  },
+  keyToSquares: function(key) {
+    return key.split('').map(move => Number(move) === 0 ? null : Number(move))
+  },
+  updateMove: function(squares) {
+    let key = utilities.squaresToKey(squares)
+    let url = `/move/${ key }`
+    let data = JSON.stringify({ winner: 1 })
+    let opts = {
+      method: 'PUT',
+      body: data
+    }
+    return fetch('/move', opts).then(res => {})
+  },
+  getMove: function(squares) {
+    squares = squares.slice()
+    let key = squares.map( square => !square ? 0 : square).join('')
+    return fetch(`/move/${ key }`).then(res => {
+      console.log('the response:', res)
+      if (res.status !== 200) {
+        console.error('error getting move:', res.status, res.statusText)
+        return
+      }
+      return res.text()
+    }).then(key => utilities.keyToSquares(key))
   }
 }
 
