@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import './Square.less'
+import './Square.css'
 
 class Square extends Component {
   renderImg(url) {

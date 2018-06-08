@@ -1,12 +1,15 @@
 import React, { Component } from 'react'
+import NavBar from './components/NavBar.js'
 import TicTacToe from './TicTacToe/Game.js'
-import './App.less'
+import './App.css'
+import 'primereact/components/common/common.css'
+import 'font-awesome/css/font-awesome.css'
 
 class App extends Component {
   render() {
     return(
       <div className="App">
-        <h1>Hello World!</h1>
+        <NavBar />
         <TicTacToe />
       </div>
     )

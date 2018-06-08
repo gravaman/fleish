@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import './InfoRepo.less'
+import './InfoRepo.css'
 
 class InfoRepo extends Component {
   getStatus() {
@@ -28,7 +28,7 @@ class InfoRepo extends Component {
 
   render() {
     return(
-      <div>
+      <div className="info-repo">
         <h2>console</h2>
         <div className="info-row">
           <span className="title">status</span>

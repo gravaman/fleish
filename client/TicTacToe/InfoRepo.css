@@ -1,0 +1,93 @@
+.info-repo {
+  --row-height: 25px;
+  --padding-title: 25px;
+  --padding-data: 10px;
+  --width: 75px;
+}
+
+h2 {
+  margin-top: 0;
+  text-align: left;
+  padding-left: var(--padding-title);
+}
+
+.spacer {
+  float: left;
+  height: var(--row-height);
+}
+
+.spacer-row {
+  float: left;
+  height: var(--row-height);
+  width: var(--width) * 3 + var(--padding-title) + var(--padding-data) * 2;
+}
+
+.spacer-title {
+  float: left;
+  height: var(--row-height);
+  width: var(--width) + var(--padding-title);
+}
+
+.spacer-data {
+  float: left;
+  height: var(--row-height);
+  width: var(--width) + var(--padding-data);
+}
+
+.info {
+  float: left;
+  height: var(--row-height);
+  width: var(--width);
+  font-size: 1.1rem;
+}
+
+.info-row {
+  clear: both;
+}
+
+.title {
+  float: left;
+  height: var(--row-height);
+  width: var(--width);
+  font-size: 1.1rem;
+  text-align: left;
+  padding-left: var(--padding-title);
+}
+
+.data {
+  float: left;
+  height: var(--row-height);
+  width: var(--width);
+  font-size: 1.1rem;
+  text-align: right;
+  padding-right: var(--padding-data);
+}
+
+.data-left {
+  float: left;
+  height: var(--row-height);
+  width: var(--width);
+  font-size: 1.1rem;
+  text-align: left;
+}
+
+.data-header {
+  float: left;
+  height: var(--row-height);
+  width: var(--width);
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+button.data {
+  float: left;
+  height: var(--row-height);
+  width: var(--width);
+  font-size: 1.1rem;
+  font-weight: bold;
+  display: inline-block;
+  text-align: center;
+  margin-left: var(--width) + var(--padding-title);
+  margin-right: var(--width) + var(--padding-data);
+  padding: 0;
+}

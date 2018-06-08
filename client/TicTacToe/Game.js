@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Board from './Board.js'
 import InfoRepo from './InfoRepo.js'
 import utilities from './utilities'
-import './Game.less'
+import './Game.css'
 
 class Game extends Component {
   constructor(props) {

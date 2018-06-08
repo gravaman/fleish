@@ -14,12 +14,15 @@ module.exports = {
         use: 'babel-loader'
       },
       {
-        test: /\.less$/,
+        test: /\.css$/,
         use: [
           { loader: 'style-loader' },
-          { loader: 'css-loader' },
-          { loader: 'less-loader' }
+          { loader: 'css-loader' }
         ]
+      },
+      {
+        test: /\.(jpe|jpg|woff|woff2|eot|ttf|svg)(\?.*$|$)/,
+        use: 'file-loader'
       }
     ]
   }
