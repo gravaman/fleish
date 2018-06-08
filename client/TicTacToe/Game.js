@@ -12,6 +12,11 @@ class Game extends Component {
         { squares: Array(9).fill(null) }
       ],
       stepNumber: 0,
+      seriesStats: {
+        wins: 0,
+        losses: 0,
+        draws: 0
+      },
       winner: null
     }
   }
@@ -22,8 +27,16 @@ class Game extends Component {
     return current.squares
   }
 
-  get isPlayerTurn() {
-    return this.state.stepNumber % 2 === 0
+  updatedStats(winner) {
+    let stats = Object.assign({}, this.state.seriesStats)
+    console.log('current stats:', stats)
+    let updated = Object.assign(stats, {
+      wins: winner === 1 ? stats.wins + 1 : stats.wins,
+      losses: winner === 2 ? stats.losses + 1 : stats.losses,
+      draws: winner === 0 ? stats.draws + 1 : stats.draws
+    })
+    console.log('updated stats:', updated)
+    return updated
   }
 
   handleReplay() {
@@ -56,11 +69,12 @@ class Game extends Component {
 
     // check for winner
     let winner = utilities.calculateWinner(playerSquares)
-    if (winner) {
+    if (winner !== null) {
       // skip ai turn if player win
       return this.setState({
         history: this.state.history.concat({ squares: playerSquares }),
         stepNumber: this.state.history.length,
+        seriesStats: this.updatedStats(winner),
         winner: winner
       })
     }
@@ -76,6 +90,7 @@ class Game extends Component {
             { squares: aiSquares }
           ]),
           stepNumber: stepNumber,
+          seriesStats: this.updatedStats(winner),
           winner: winner
         }, () => utilities.sendMove(2, startSquares, playerSquares, aiSquares))
       })
@@ -91,6 +106,7 @@ class Game extends Component {
         <InfoRepo
           winner={ this.state.winner }
           onReplay={ () => this.handleReplay() }
+          seriesStats={ this.state.seriesStats }
         />
       </div>
     )

@@ -3,14 +3,27 @@ import './InfoRepo.less'
 
 class InfoRepo extends Component {
   getStatus() {
-    console.log('checking status')
-    if (this.props.winner === 1) {
-      return 'Victory'
-    }
-    if (this.props.winner === 2) {
-      return 'Defeat'
-    }
-    return 'in-progress'
+    return this.props.winner === null ? ':playing' : this.getResult()
+  }
+
+  getResult() {
+    return [ 'draw', 'victory', 'defeat' ][this.props.winner]
+  }
+
+  getEmoji() {
+    return [ ':P', ':)', ':(' ][this.props.winner]
+  }
+
+  renderStatRow(title, result) {
+    let total = this.props.seriesStats.wins + this.props.seriesStats.losses + this.props.seriesStats.draws
+    let rate = total > 0 ? result / total : '--'
+    return (
+      <div className="info-row">
+        <span className="title">{ title }</span>
+        <span className="data">{ result }</span>
+        <span className="data">{ rate }</span>
+      </div>
+    )
   }
 
   render() {
@@ -20,6 +33,7 @@ class InfoRepo extends Component {
         <div className="info-row">
           <span className="title">status</span>
           <span className="data">{ this.getStatus() }</span>
+          <span className="data-left">{ this.getEmoji() }</span>
         </div>
         <div className="spacer-row"></div>
         <div className="info-row">
@@ -27,21 +41,9 @@ class InfoRepo extends Component {
           <span className="data-header">count</span>
           <span className="data-header">rate</span>
         </div>
-        <div className="info-row">
-          <span className="title">win</span>
-          <span className="data">0</span>
-          <span className="data">0</span>
-        </div>
-        <div className="info-row">
-          <span className="title">loss</span>
-          <span className="data">0</span>
-          <span className="data">0</span>
-        </div>
-        <div className="info-row">
-          <span className="title">draw</span>
-          <span className="data">0</span>
-          <span className="data">0</span>
-        </div>
+        { this.renderStatRow('wins', this.props.seriesStats.wins) }
+        { this.renderStatRow('losses', this.props.seriesStats.losses) }
+        { this.renderStatRow('draws', this.props.seriesStats.draws) }
         <div className="spacer-row"></div>
         <div className="info-row">
           <button

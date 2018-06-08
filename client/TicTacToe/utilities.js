@@ -10,13 +10,17 @@ let utilities = {
       [0, 4, 8],
       [2, 4, 6]
     ]
+    let isDraw = true
     for (let i = 0; i < lines.length; i++) {
       const [a, b, c] = lines[i]
+      if (!squares[a]) {
+        isDraw = false
+      }
       if (squares[a] && squares[a] === squares[b] && squares[b] === squares[c]) {
         return squares[a]
       }
     }
-    return null
+    return isDraw ? 0 : null
   },
   squaresToKey: function(squares) {
     squares = squares.slice()
