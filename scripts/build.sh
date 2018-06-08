@@ -23,5 +23,10 @@ then
   echo "port: $PORT"
 fi
 
-npx webpack
-node $START_PATH
+if [[ "$ENV_TYPE" = "ui" ]]
+then
+  webpack-dev-server --open
+else
+  npx webpack
+  node $START_PATH
+fi

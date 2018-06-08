@@ -1,7 +1,13 @@
 const path = require('path')
+const webpack = require('webpack')
 
 module.exports = {
   entry: './client/index.js',
+  devtool: 'inline-source-map',
+  devServer: {
+    contentBase: path.join(__dirname, 'dist'),
+    hot: true
+  },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js'
@@ -25,5 +31,9 @@ module.exports = {
         use: 'file-loader'
       }
     ]
-  }
+  },
+  plugins: [
+    new webpack.NamedModulesPlugin(),
+    new webpack.HotModuleReplacementPlugin()
+  ]
 }

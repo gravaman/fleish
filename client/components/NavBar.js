@@ -4,9 +4,9 @@ import './NavBar.css'
 class NavBar extends Component {
   render() {
     return(
-      <div className='navBar'>
+      <header className='nav'>
         <h1>doowoP</h1>
-      </div>
+      </header>
     )
   }
 }

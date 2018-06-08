@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import NavBar from './components/NavBar.js'
 import TicTacToe from './TicTacToe/Game.js'
-import './App.css'
 import 'primereact/components/common/common.css'
 import 'font-awesome/css/font-awesome.css'
+import './styles.css'
+import './App.css'
 
 class App extends Component {
   render() {

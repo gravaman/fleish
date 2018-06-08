@@ -6,6 +6,7 @@
   "scripts": {
     "start": "./scripts/build.sh production",
     "dev": "./scripts/build.sh dev",
+    "ui": "./scripts/build.sh ui",
     "test": "./scripts/build.sh test"
   },
   "repository": {
@@ -42,6 +43,7 @@
     "file-loader": "^1.1.11",
     "style-loader": "^0.21.0",
     "webpack": "^4.11.0",
-    "webpack-cli": "^3.0.2"
+    "webpack-cli": "^3.0.2",
+    "webpack-dev-server": "^3.1.4"
   }
 }
