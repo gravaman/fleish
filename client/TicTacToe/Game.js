@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Board from './Board.js'
+import InfoRepo from './InfoRepo.js'
 import utilities from './utilities'
 import './Game.less'
 
@@ -23,6 +24,16 @@ class Game extends Component {
 
   get isPlayerTurn() {
     return this.state.stepNumber % 2 === 0
+  }
+
+  handleReplay() {
+    return this.setState({
+      history: [
+        { squares: Array(9).fill(null) }
+      ],
+      stepNumber: 0,
+      winner: null
+    })
   }
 
   handleClick(i) {
@@ -76,6 +87,10 @@ class Game extends Component {
         <Board
           squares={ this.squares }
           onClick={ i => this.handleClick(i) }
+        />
+        <InfoRepo
+          winner={ this.state.winner }
+          onReplay={ () => this.handleReplay() }
         />
       </div>
     )

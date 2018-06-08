@@ -5,6 +5,8 @@ Welcome to the playground!
 - [Reinforcement Learning](http://incompleteideas.net/book/bookdraft2017nov5.pdf) (Sutton, Barto)
 
 ## To Do
-- result display
-- replay button
+- result display (win/loss and replay button)
+- refresh icon
 - win rate graph
+- ui framework
+- go live
