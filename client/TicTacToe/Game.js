@@ -103,6 +103,7 @@ class Game extends Component {
           squares={ this.squares }
           onClick={ i => this.handleClick(i) }
         />
+        <div className="spacer"></div>
         <InfoRepo
           winner={ this.state.winner }
           onReplay={ () => this.handleReplay() }

@@ -1,3 +1,9 @@
+.board {
+  margin-left: 50px;
+  margin-top: 50px;
+  height: 250px;
+}
+
 .board-row::after {
   clear: both;
 }

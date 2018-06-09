@@ -5,7 +5,11 @@ class NavBar extends Component {
   render() {
     return(
       <header className='nav'>
-        <h1>doowo:P</h1>
+        <h1 className='header'>
+          <span className='logo-base'>doowo</span>
+          <span className='logo-eyes'>{':'}</span>
+          <span className='logo-end'>P</span>
+        </h1>
       </header>
     )
   }

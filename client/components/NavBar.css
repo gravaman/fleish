@@ -1,14 +1,30 @@
-.nav {
-  background-color: var(--main-charcoal);
-  display: flex;
-  height: 100px;
-  align-items: center;
+h1.header {
+  grid-area: logo-header;
+  text-align: center;
 }
 
-h1 {
-  color: var(--main-green);
-  margin-left: 35%;
-  margin-right: 35%;
-  width: 30%;
-  text-align: center;
+.logo-base {
+  font-size: 1.9em;
+  color: white;
+}
+
+.logo-eyes {
+  font-size: 1.7em;
+  font-weight: lighter;
+  color: white;
+}
+
+.logo-end {
+  font-size: 2em;
+  color: white;
+}
+
+.nav {
+  display: grid;
+  grid-template-columns: [start] 1fr [logo-header-start] 200px [logo-header-end] 1fr [end];
+  grid-template-areas: ". logo-header .";
+  align-items: center;
+  justify-items: center;
+  height: 150px;
+  background-color: var(--main-charcoal);
 }

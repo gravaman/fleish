@@ -3,7 +3,7 @@ import './InfoRepo.css'
 
 class InfoRepo extends Component {
   getStatus() {
-    return this.props.winner === null ? ':playing' : this.getResult()
+    return this.props.winner === null ? 'playing' : this.getResult()
   }
 
   getResult() {
@@ -29,11 +29,11 @@ class InfoRepo extends Component {
   render() {
     return(
       <div className="info-repo">
-        <h2>console</h2>
+        <div className="spacer-row"></div>
         <div className="info-row">
           <span className="title">status</span>
+          <span className="spacer-data"></span>
           <span className="data">{ this.getStatus() }</span>
-          <span className="data-left">{ this.getEmoji() }</span>
         </div>
         <div className="spacer-row"></div>
         <div className="info-row">
@@ -50,9 +50,10 @@ class InfoRepo extends Component {
             className="data"
             onClick={ () => this.props.onReplay() }
           >
-            replay
+            <i className="fa fa-repeat"></i>
           </button>
         </div>
+        <div className="spacer-row"></div>
       </div>
     )
   }

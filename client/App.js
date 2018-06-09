@@ -1,17 +1,25 @@
 import React, { Component } from 'react'
 import NavBar from './components/NavBar.js'
 import TicTacToe from './TicTacToe/Game.js'
-import 'primereact/components/common/common.css'
-import 'font-awesome/css/font-awesome.css'
+import 'font-awesome/css/font-awesome.min.css'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import 'react-tabs/style/react-tabs.css'
 import './styles.css'
 import './App.css'
 
 class App extends Component {
   render() {
     return(
-      <div className="App">
+      <div className="app">
         <NavBar />
-        <TicTacToe />
+        <Tabs>
+          <TabList>
+            <Tab>hello, world!</Tab>
+          </TabList>
+          <TabPanel>
+            <TicTacToe />
+          </TabPanel>
+        </Tabs>
       </div>
     )
   }

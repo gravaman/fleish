@@ -29,9 +29,9 @@
     "express": "^4.16.3",
     "font-awesome": "^4.7.0",
     "mongoose": "^5.1.4",
-    "primereact": "^1.6.0",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
+    "react-tabs": "^2.2.2",
     "react-transition-group": "^2.3.1"
   },
   "devDependencies": {
