@@ -1,4 +1,10 @@
+:root {
+  --main-charcoal: #323233;
+  --main-green: #A0EF86;
+}
+
 html, body {
   margin: 0;
   height: 100%;
+  font-family: 'Special Elite', Arial, Helvetica, sans-serif;
 }

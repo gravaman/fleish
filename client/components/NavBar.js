@@ -5,7 +5,7 @@ class NavBar extends Component {
   render() {
     return(
       <header className='nav'>
-        <h1>doowoP</h1>
+        <h1>doowo:P</h1>
       </header>
     )
   }

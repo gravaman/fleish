@@ -1,8 +1,14 @@
 .nav {
-  background-color: green;
+  background-color: var(--main-charcoal);
+  display: flex;
   height: 100px;
+  align-items: center;
 }
 
 h1 {
-  margin-top: 0;
+  color: var(--main-green);
+  margin-left: 35%;
+  margin-right: 35%;
+  width: 30%;
+  text-align: center;
 }
