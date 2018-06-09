@@ -27,4 +27,5 @@ h1.header {
   justify-items: center;
   height: 150px;
   background-color: var(--main-charcoal);
+  background-image: url('../../dist/images/doowop-bg-v3.png');
 }
