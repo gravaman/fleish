@@ -5,7 +5,8 @@
   margin-top: 10%;
   align-content: center;
   align-items: center;
-  box-shadow: 0px 0px 5px var(--main-charcoal);
+  background-color: white;
+  opacity: 0.5;
 }
 
 .spacer {

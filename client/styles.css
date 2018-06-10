@@ -8,3 +8,7 @@ html, body {
   height: 100%;
   font-family: 'Special Elite', Arial, Helvetica, sans-serif;
 }
+
+body {
+  background-image: url('../dist/images/forge-wall-v1.png');
+}
