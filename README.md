@@ -5,7 +5,8 @@ Welcome to the playground!
 - [Reinforcement Learning](http://incompleteideas.net/book/bookdraft2017nov5.pdf) (Sutton, Barto)
 
 ## To Do
-- hover mouse change (replay icon overlay / squares)
+- stats to charts
 - transition animations
-- stats to chart
+- mobile css
+- css and js cleanup
 - go live

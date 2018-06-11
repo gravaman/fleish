@@ -8,6 +8,7 @@
   font-size: 5em;
   text-shadow: 0 1px 12px black;
   text-align: center;
+  cursor: pointer;
 }
 
 .square:focus {
