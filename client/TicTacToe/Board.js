@@ -3,14 +3,30 @@ import Square from './Square.js'
 import './Board.css'
 
 class Board extends Component {
+  renderReplay() {
+    return (
+      <div
+        className={ this.props.winner !== null ? "replay-overlay-active" : "replay-overlay" }
+      >
+        <button
+          className="replay-btn"
+          onClick={ this.props.onReplay }
+        >
+          <i className="fa fa-repeat fa-5x"></i>
+        </button>
+      </div>
+    )
+  }
   renderSquare(i) {
     const player = this.props.squares[i]
     return (
-      <Square
-        value={ player }
-        onClick={ () => this.props.onClick(i) }
-        imgUrl={ this.playerToUrl(player) }
-      />
+      <div className={ 'position-' + i }>
+        <Square
+          value={ player }
+          onClick={ () => this.props.onClick(i) }
+          imgUrl={ this.playerToUrl(player) }
+        />
+      </div>
     )
   }
 
@@ -26,21 +42,18 @@ class Board extends Component {
 
   render() {
     return(
-      <div className='board'>
-        <div className='board-row'>
-          { this.renderSquare(0) }
-          { this.renderSquare(1) }
-          { this.renderSquare(2) }
-        </div>
-        <div className='board-row'>
-          { this.renderSquare(3) }
-          { this.renderSquare(4) }
-          { this.renderSquare(5) }
-        </div>
-        <div className='board-row'>
-          { this.renderSquare(6) }
-          { this.renderSquare(7) }
-          { this.renderSquare(8) }
+      <div>
+        { this.renderReplay() }
+        <div className="board-container">
+            { this.renderSquare(0) }
+            { this.renderSquare(1) }
+            { this.renderSquare(2) }
+            { this.renderSquare(3) }
+            { this.renderSquare(4) }
+            { this.renderSquare(5) }
+            { this.renderSquare(6) }
+            { this.renderSquare(7) }
+            { this.renderSquare(8) }
         </div>
       </div>
     )

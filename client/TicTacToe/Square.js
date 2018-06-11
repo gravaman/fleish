@@ -7,19 +7,29 @@ class Square extends Component {
       return (
         <img
           src={ url }
-          alt="car image"
+          alt=""
           className="square-icon"
         />)
     }
     return null
   }
 
+  renderText() {
+    if (this.props.value === 1) {
+      return 'O'
+    }
+    if (this.props.value === 2) {
+      return 'X'
+    }
+    return
+  }
+
   render() {
     return(
       <button
-        className='square'
+        className="square"
         onClick={ this.props.onClick }>
-          { this.renderImg(this.props.imgUrl) }
+          { this.renderText() }
       </button>
     )
   }

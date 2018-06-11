@@ -99,16 +99,20 @@ class Game extends Component {
   render() {
     return(
       <div className="game">
-        <Board
-          squares={ this.squares }
-          onClick={ i => this.handleClick(i) }
-        />
-        <div className="spacer"></div>
-        <InfoRepo
-          winner={ this.state.winner }
-          onReplay={ () => this.handleReplay() }
-          seriesStats={ this.state.seriesStats }
-        />
+        <div className="game-board">
+          <Board
+            squares={ this.squares }
+            winner={ this.state.winner }
+            onClick={ i => this.handleClick(i) }
+            onReplay={ () => this.handleReplay() }
+          />
+        </div>
+        <div className="game-info">
+          <InfoRepo
+            winner={ this.state.winner }
+            seriesStats={ this.state.seriesStats }
+          />
+        </div>
       </div>
     )
   }

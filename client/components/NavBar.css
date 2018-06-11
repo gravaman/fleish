@@ -21,7 +21,7 @@ h1.header {
 
 .nav {
   display: grid;
-  grid-template-columns: [start] 1fr [logo-header-start] 200px [logo-header-end] 1fr [end];
+  grid-template-columns: [start] 1fr [logo-header-start] 600px [logo-header-end] 1fr [end];
   grid-template-areas: ". logo-header .";
   align-items: center;
   justify-items: center;

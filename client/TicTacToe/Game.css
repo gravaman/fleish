@@ -1,14 +1,21 @@
-.game {
-  display: flex;
-  margin-left: 25%;
-  margin-right: 25%;
-  margin-top: 10%;
-  align-content: center;
-  align-items: center;
-  background-color: white;
-  opacity: 0.5;
+.game-board {
+  grid-area: game-board;
 }
 
-.spacer {
-  width: 5px;
+.game-info {
+  grid-area: game-info;
+}
+
+.game {
+  display: grid;
+  grid-template-columns: [start] 1fr [board-start] 600px [info-start] 600px [info-end] 1fr [end];
+  grid-template-rows: [start] 150px [game-start] 600px [game-end] 150px [end];
+  grid-template-areas:
+    ". . . ."
+    ". game-board game-info ."
+    ". . . .";
+  align-items: center;
+  justify-items: center;
+  background-color: white;
+  opacity: 0.5;
 }

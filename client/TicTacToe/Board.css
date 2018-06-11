@@ -1,9 +1,108 @@
-.board {
-  margin-left: 50px;
-  margin-top: 50px;
-  height: 250px;
+.position-0 {
+  grid-area: board-square-0;
+  background-image: url("../../dist/images/square-0-v1.png");
+  height: 100%;
+  width: 100%;
+  border-radius: 25px 0 0 0;
 }
 
-.board-row::after {
-  clear: both;
+.position-1 {
+  grid-area: board-square-1;
+  background-image: url("../../dist/images/square-0-v1.png");
+  height: 100%;
+  width: 100%;
+}
+
+.position-2 {
+  grid-area: board-square-2;
+  background-image: url("../../dist/images/square-0-v1.png");
+  height: 100%;
+  width: 100%;
+  border-radius: 0 25px 0 0;
+}
+
+.position-3 {
+  grid-area: board-square-3;
+  background-image: url("../../dist/images/square-0-v1.png");
+  height: 100%;
+  width: 100%;
+}
+
+.position-4 {
+  grid-area: board-square-4;
+  background-image: url("../../dist/images/square-0-v1.png");
+  height: 100%;
+  width: 100%;
+}
+
+.position-5 {
+  grid-area: board-square-5;
+  background-image: url("../../dist/images/square-0-v1.png");
+  height: 100%;
+  width: 100%;
+}
+
+.position-6 {
+  grid-area: board-square-6;
+  background-image: url("../../dist/images/square-0-v1.png");
+  height: 100%;
+  width: 100%;
+  border-radius: 0 0 0 25px;
+}
+
+.position-7 {
+  grid-area: board-square-7;
+  background-image: url("../../dist/images/square-0-v1.png");
+  height: 100%;
+  width: 100%;
+}
+
+.position-8 {
+  grid-area: board-square-8;
+  background-image: url("../../dist/images/square-0-v1.png");
+  height: 100%;
+  width: 100%;
+  border-radius: 0 0 25px 0;
+}
+
+.board-container {
+  position: relative;
+  display: grid;
+  z-index: 1;
+  grid-template-columns: 200px 200px 200px;
+  grid-template-rows: 200px 200px 200px;
+  grid-template-areas:
+    "board-square-0 board-square-1 board-square-2"
+    "board-square-3 board-square-4 board-square-5"
+    "board-square-6 board-square-7 board-square-8";
+  align-items: center;
+  justify-items: center;
+  background-image: url("../../dist/images/square-1-v1.png");
+  border-radius: 25px;
+}
+
+.replay-overlay {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  z-index: 0;
+  opacity: 0;
+}
+
+.replay-overlay-active {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 2;
+}
+
+.replay-btn {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-left: 33%;
+  margin-right: 33%;
 }
