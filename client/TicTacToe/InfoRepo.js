@@ -30,7 +30,7 @@ class InfoRepo extends Component {
   render() {
     return(
       <div>
-        <HubSpokeCharts />
+        <HubSpokeCharts seriesStats={ this.props.seriesStats }/>
         <div className='info-spacer'></div>
       </div>
     )
