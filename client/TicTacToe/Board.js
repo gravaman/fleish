@@ -1,60 +1,59 @@
 import React, { Component } from 'react'
+import classNames from 'classnames'
 import Square from './Square.js'
 import './Board.css'
 
-class Board extends Component {
-  renderReplay() {
-    return (
-      <div
-        className={ this.props.winner !== null ? "replay-overlay-active" : "replay-overlay" }
+function Overlay(props) {
+  let overlayClass = classNames({
+    'replay-overlay': true,
+    'replay-overlay-active': props.winner !== null
+  })
+
+  return (
+    <div className={ overlayClass }>
+      <button
+        className="replay-btn"
+        onClick={ props.onReplay }
       >
-        <button
-          className="replay-btn"
-          onClick={ this.props.onReplay }
-        >
-          <i className="fa fa-repeat fa-5x"></i>
-        </button>
-      </div>
-    )
-  }
-  renderSquare(i) {
-    const player = this.props.squares[i]
-    return (
-      <div className={ 'position-' + i }>
+        <i className="fa fa-repeat fa-5x"></i>
+      </button>
+    </div>
+  )
+}
+
+function SquaresList(props) {
+  const { squares, onClick } = props
+  const listItems = squares.map((player, index) => (
+      <div
+        className={'position-' + index }
+        key={ index.toString() }
+      >
         <Square
           value={ player }
-          onClick={ () => this.props.onClick(i) }
-          imgUrl={ this.playerToUrl(player) }
+          onClick={ () => onClick(index) }
         />
       </div>
     )
-  }
+  )
+  return (
+    <div className="board-container">
+      { listItems }
+    </div>
+  )
+}
 
-  playerToUrl(player) {
-    const playerImg = '/images/mg-hawk-1955.jpg'
-    const aiImg = '/images/willys-jeep.jpeg'
-
-    if (!player) {
-      return null
-    }
-    return player === 1 ? playerImg : aiImg
-  }
-
+class Board extends Component {
   render() {
-    return(
+    return (
       <div>
-        { this.renderReplay() }
-        <div className="board-container">
-            { this.renderSquare(0) }
-            { this.renderSquare(1) }
-            { this.renderSquare(2) }
-            { this.renderSquare(3) }
-            { this.renderSquare(4) }
-            { this.renderSquare(5) }
-            { this.renderSquare(6) }
-            { this.renderSquare(7) }
-            { this.renderSquare(8) }
-        </div>
+        <Overlay
+          winner={ this.props.winner }
+          onReplay={ this.props.onReplay }
+        />
+        <SquaresList
+          squares={ this.props.squares }
+          onClick={ this.props.onClick }
+        />
       </div>
     )
   }

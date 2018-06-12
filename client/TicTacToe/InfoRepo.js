@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import HubSpokeCharts from './HubSpokeCharts.js'
 import './InfoRepo.css'
 
 class InfoRepo extends Component {
@@ -28,9 +29,9 @@ class InfoRepo extends Component {
 
   render() {
     return(
-      <div className="info-container">
-        <div className="series-chart"></div>
-        <div className="ai-chart"></div>
+      <div>
+        <HubSpokeCharts />
+        <div className='info-spacer'></div>
       </div>
     )
   }

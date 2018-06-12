@@ -5,8 +5,12 @@ Welcome to the playground!
 - [Reinforcement Learning](http://incompleteideas.net/book/bookdraft2017nov5.pdf) (Sutton, Barto)
 
 ## To Do
-- stats to charts
+- world data
+- floats
 - transition animations
 - mobile css
 - css and js cleanup
 - go live
+
+## Bugs
+- [O,O,X,O,X,,,X,] ends game

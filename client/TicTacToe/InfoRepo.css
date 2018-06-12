@@ -1,22 +1,3 @@
-.series-chart {
-  grid-area: series;
-  width: 100%;
-  height: 100%;
-}
-
-.ai-chart {
-  grid-area: ai;
-  width: 100%;
-  height: 100%;
-}
-
-.info-container {
-  display: grid;
-  grid-template-rows: 300px 300px;
-  width: 600px;
-  grid-template-areas:
-    "series"
-    "ai";
-  align-items: center;
-  justify-items: center;
+.info-spacer {
+  height: 300px;
 }
