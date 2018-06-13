@@ -88,8 +88,8 @@
 .replay-btn {
   cursor: pointer;
   position: absolute;
-  width: calc(var(--main-width) / 6);
-  height: calc(var(--main-height) / 9 * 2);
+  width: calc(var(--main-width) / 6 + var(--main-gutter));
+  height: calc(var(--main-height) / 9 * 2  + var(--main-gutter));
   top: 50%;
   transform: translateY(-50%);
   margin-left: 33%;
