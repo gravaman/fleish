@@ -1,0 +1,25 @@
+.github {
+  text-decoration: none;
+  grid-area: github-link;
+  text-align: center;
+  color: white;
+}
+
+.email {
+  text-decoration: none;
+  grid-area: email-link;
+  text-align: center;
+  color: white;
+}
+
+footer {
+  display: grid;
+  grid-template-columns: 1fr auto auto 1fr;
+  grid-template-areas: ". email-link github-link .";
+  grid-column-gap: 20px;
+  height: 100px;
+  align-items: center;
+  justify-items: center;
+  background-color: var(--main-charcoal);
+  background-image: url('../../dist/images/doowop-bg-v4.png');
+}

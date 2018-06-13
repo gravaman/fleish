@@ -1,29 +1,25 @@
 .title-series {
   grid-area: series-title;
-  width: 100%;
   text-align: center;
 }
 
 .title-world {
   grid-area: world-title;
-  width: 100%;
   text-align: center;
 }
 
 .chart-series {
   grid-area: series-chart;
-  width: 100%;
 }
 
 .chart-world {
   grid-area: world-chart;
-  width: 100%;
 }
 
 .chart-container {
   display: grid;
-  grid-template-columns: 150px 450px;
-  grid-template-rows: 150px 150px;
+  grid-template-columns: calc(var(--main-width) / 6) calc(var(--main-width) / 3);
+  grid-template-rows: calc(var(--main-height) / 6) calc(var(--main-height) / 6);
   grid-template-areas:
     "series-title series-chart"
     "world-title world-chart";

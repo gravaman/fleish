@@ -4,13 +4,20 @@ import Square from './Square.js'
 import './Board.css'
 
 function Overlay(props) {
-  let overlayClass = classNames({
-    'replay-overlay': true,
+  let overlayClasses = classNames({
     'replay-overlay-active': props.winner !== null
   })
 
+  let messageClasses = classNames({
+    'result-msg': true,
+    'result-msg-draw': props.winner === 0,
+    'result-msg-victory': props.winner === 1,
+    'result-msg-defeat': props.winner === 2
+  })
+
   return (
-    <div className={ overlayClass }>
+    <div className={ overlayClasses }>
+      <h2 className={ messageClasses }>{ ['Draw :|', 'Victory :)', 'Defeat :('][props.winner] }</h2>
       <button
         className="replay-btn"
         onClick={ props.onReplay }
@@ -43,13 +50,28 @@ function SquaresList(props) {
 }
 
 class Board extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      showOverlay: false
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.winner !== this.props.winner) {
+      let showOverlay = this.props.winner !== null
+      this.setState({ showOverlay })
+    }
+  }
+
   render() {
     return (
       <div>
-        <Overlay
-          winner={ this.props.winner }
-          onReplay={ this.props.onReplay }
-        />
+        { this.state.showOverlay && (
+          <Overlay
+            winner={ this.props.winner }
+            onReplay={ this.props.onReplay }
+          />)}
         <SquaresList
           squares={ this.props.squares }
           onClick={ this.props.onClick }

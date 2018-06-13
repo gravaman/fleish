@@ -97,6 +97,16 @@ class Game extends Component {
   }
 
   render() {
+    const githubStr = 'github.com/gravaman/fleish'
+    const githubLink = (<a href="https://github.com/gravaman/fleish">{ githubStr }</a>)
+    const aboutText1 = `Hello, world! Welcome to the playground. This is the first of hopefully many mini-apps to come as I explore the world of ML.
+      Tic-tac-toe was my first experience converting an algorithm into an executable program. The AI 'learns' which moves are optimal
+      through experience instead of relying on pre-programmed moves for every board layout. That's all to say that if the AI opponent is too easy check
+      back later!`
+    const aboutText2 = `As I progress in my studies I intend to post updated games here as a means of practicing implementation. Please feel free to
+      check out the codebase at `
+    const closingText = '.'
+
     return(
       <div className="game">
         <div className="game-board">
@@ -108,10 +118,13 @@ class Game extends Component {
           />
         </div>
         <div className="game-info">
-          <InfoRepo
-            winner={ this.state.winner }
-            seriesStats={ this.state.seriesStats }
-          />
+          <h2 className="about-title">about</h2>
+          <p className='about-text'>
+            { aboutText1 }
+          </p>
+          <p className='about-text'>
+            { aboutText2 }{ githubLink }{ closingText }
+          </p>
         </div>
       </div>
     )

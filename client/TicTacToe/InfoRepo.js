@@ -3,6 +3,10 @@ import HubSpokeCharts from './HubSpokeCharts.js'
 import './InfoRepo.css'
 
 class InfoRepo extends Component {
+  constructor(props) {
+    super(props)
+  }
+
   getStatus() {
     return this.props.winner === null ? 'playing' : this.getResult()
   }
@@ -30,7 +34,7 @@ class InfoRepo extends Component {
   render() {
     return(
       <div>
-        <HubSpokeCharts seriesStats={ this.props.seriesStats }/>
+        <HubSpokeCharts seriesStats={ this.props.seriesStats } />
         <div className='info-spacer'></div>
       </div>
     )

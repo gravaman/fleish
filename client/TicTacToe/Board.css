@@ -1,106 +1,118 @@
 .position-0 {
   grid-area: board-square-0;
-  background-image: url("../../dist/images/square-0-v1.png");
   height: 100%;
   width: 100%;
-  border-radius: 25px 0 0 0;
+  background-color: var(--lighter-black);
 }
 
 .position-1 {
   grid-area: board-square-1;
-  background-image: url("../../dist/images/square-0-v1.png");
   height: 100%;
   width: 100%;
+  background-color: var(--lighter-black);
 }
 
 .position-2 {
   grid-area: board-square-2;
-  background-image: url("../../dist/images/square-0-v1.png");
   height: 100%;
   width: 100%;
-  border-radius: 0 25px 0 0;
+  background-color: var(--lighter-black);
 }
 
 .position-3 {
   grid-area: board-square-3;
-  background-image: url("../../dist/images/square-0-v1.png");
   height: 100%;
   width: 100%;
+  background-color: var(--lighter-black);
 }
 
 .position-4 {
   grid-area: board-square-4;
-  background-image: url("../../dist/images/square-0-v1.png");
   height: 100%;
   width: 100%;
+  background-color: var(--lighter-black);
 }
 
 .position-5 {
   grid-area: board-square-5;
-  background-image: url("../../dist/images/square-0-v1.png");
   height: 100%;
   width: 100%;
+  background-color: var(--lighter-black);
 }
 
 .position-6 {
   grid-area: board-square-6;
-  background-image: url("../../dist/images/square-0-v1.png");
   height: 100%;
   width: 100%;
-  border-radius: 0 0 0 25px;
+  background-color: var(--lighter-black);
 }
 
 .position-7 {
   grid-area: board-square-7;
-  background-image: url("../../dist/images/square-0-v1.png");
   height: 100%;
   width: 100%;
+  background-color:var(--lighter-black);
 }
 
 .position-8 {
   grid-area: board-square-8;
-  background-image: url("../../dist/images/square-0-v1.png");
   height: 100%;
   width: 100%;
-  border-radius: 0 0 25px 0;
+  background-color: var(--lighter-black);
 }
 
 .board-container {
   position: relative;
   display: grid;
   z-index: 1;
-  grid-template-columns: 200px 200px 200px;
-  grid-template-rows: 200px 200px 200px;
+  grid-template-columns: calc(var(--main-width) / 6) calc(var(--main-width) / 6) calc(var(--main-width) / 6);
+  grid-template-rows: calc(var(--main-height) / 9 * 2) calc(var(--main-height) / 9 * 2) calc(var(--main-height) / 9 * 2);
   grid-template-areas:
     "board-square-0 board-square-1 board-square-2"
     "board-square-3 board-square-4 board-square-5"
     "board-square-6 board-square-7 board-square-8";
+  grid-column-gap: 10px;
+  grid-row-gap: 10px;
   align-items: center;
   justify-items: center;
-  background-image: url("../../dist/images/square-1-v1.png");
-  border-radius: 25px;
-}
-
-.replay-overlay {
-  position: absolute;
-  width: 600px;
-  height: 600px;
-  z-index: 0;
-  background: rgba(0, 0, 0, 0);
 }
 
 .replay-overlay-active {
-  background: rgba(0, 0, 0, 0.8);
+  position: absolute;
+  background-color: var(--light-black);
+  width: calc(var(--main-width) / 2 + var(--main-gutter) * 2);
+  height: calc(var(--main-width) / 2 + var(--main-gutter) * 2);
   z-index: 2;
 }
 
 .replay-btn {
   cursor: pointer;
   position: absolute;
-  width: 200px;
-  height: 200px;
+  width: calc(var(--main-width) / 6);
+  height: calc(var(--main-height) / 9 * 2);
   top: 50%;
   transform: translateY(-50%);
   margin-left: 33%;
   margin-right: 33%;
+}
+
+.result-msg {
+  width: 50%;
+  margin: auto;
+  text-align: center;
+  height: calc(var(--main-height) / 9 * 2);
+  top: 50%;
+  transform: translateY(50%);
+}
+
+.result-msg-draw {
+  color: var(--gray);
+}
+
+.result-msg-victory {
+  color: var(--green);
+}
+
+.result-msg-defeat {
+  color: var(--red);
 }

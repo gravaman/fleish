@@ -8,13 +8,27 @@
 
 .game {
   display: grid;
-  grid-template-columns: [start] 1fr [board-start] 600px [info-start] 600px [info-end] 1fr [end];
-  grid-template-rows: [start] 150px [game-start] 600px [game-end] 150px [end];
+  grid-template-columns: 1fr calc(var(--main-width) / 2 + var(--main-gutter) * 2) calc(var(--main-width) / 2 + var(--main-gutter) * 2) 1fr;
+  grid-template-rows: calc(var(--main-height) / 12) calc(var(--main-height) / 3 * 2 + var(--main-gutter) * 2) calc(var(--main-height) / 12);
   grid-template-areas:
     ". . . ."
     ". game-board game-info ."
     ". . . .";
-  align-items: center;
+  align-items: start;
   justify-items: center;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: var(--light-gray);
+}
+
+.about-title {
+  text-decoration: underline;
+  font-weight: bold;
+  width: 50%;
+  margin: auto;
+  text-align: center;
+}
+
+.about-text {
+  margin: 1em 2em;
+  line-height: 1.6;
+  text-indent: 25px;
 }

@@ -1,3 +1,3 @@
 .info-spacer {
-  height: 300px;
+  height: calc(var(--main-height) / 3);
 }
