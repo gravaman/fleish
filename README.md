@@ -10,6 +10,3 @@ Welcome to the playground!
 - mobile
 - cleanup
 - live
-
-## Bugs
-- [O,O,X,O,X,,,X,] ends game

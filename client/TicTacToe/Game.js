@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import Board from './Board.js'
-import InfoRepo from './InfoRepo.js'
 import utilities from './utilities'
 import './Game.css'
 
@@ -12,11 +11,6 @@ class Game extends Component {
         { squares: Array(9).fill(null) }
       ],
       stepNumber: 0,
-      seriesStats: {
-        wins: 0,
-        losses: 0,
-        draws: 0
-      },
       winner: null
     }
   }
@@ -25,18 +19,6 @@ class Game extends Component {
     const history = this.state.history
     const current = history[this.state.stepNumber]
     return current.squares
-  }
-
-  updatedStats(winner) {
-    let stats = Object.assign({}, this.state.seriesStats)
-    console.log('current stats:', stats)
-    let updated = Object.assign(stats, {
-      wins: winner === 1 ? stats.wins + 1 : stats.wins,
-      losses: winner === 2 ? stats.losses + 1 : stats.losses,
-      draws: winner === 0 ? stats.draws + 1 : stats.draws
-    })
-    console.log('updated stats:', updated)
-    return updated
   }
 
   handleReplay() {
@@ -74,7 +56,6 @@ class Game extends Component {
       return this.setState({
         history: this.state.history.concat({ squares: playerSquares }),
         stepNumber: this.state.history.length,
-        seriesStats: this.updatedStats(winner),
         winner: winner
       })
     }
@@ -90,7 +71,6 @@ class Game extends Component {
             { squares: aiSquares }
           ]),
           stepNumber: stepNumber,
-          seriesStats: this.updatedStats(winner),
           winner: winner
         }, () => utilities.sendMove(2, startSquares, playerSquares, aiSquares))
       })
