@@ -5,6 +5,7 @@
   "main": "server/index.js",
   "scripts": {
     "start": "node ./server/index.js",
+    "postinstall": "./scripts/build.sh production",
     "prod": "./scripts/build.sh production",
     "dev": "./scripts/build.sh dev",
     "ui": "./scripts/build.sh ui",
