@@ -33,9 +33,7 @@
     "font-awesome": "^4.7.0",
     "mongoose": "^5.1.4",
     "react": "^16.4.0",
-    "react-dom": "^16.4.0",
-    "react-tooltip": "^3.6.1",
-    "react-transition-group": "^2.3.1"
+    "react-dom": "^16.4.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
