@@ -32,6 +32,9 @@ fi
 if [[ "$ENV_TYPE" = "ui" ]]
 then
   webpack-dev-server --open
+elif [[ "$ENV_TYPE" = "production" ]]
+then
+  npx webpack --config $WEBPACK_PATH
 else
   npx webpack --config $WEBPACK_PATH
   node $START_PATH
