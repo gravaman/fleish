@@ -3,3 +3,5 @@ dist/*
 !dist/index.html
 !dist/images
 .DS_Store
+npm-debug.log
+/*.env

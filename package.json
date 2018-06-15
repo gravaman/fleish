@@ -9,6 +9,9 @@
     "ui": "./scripts/build.sh ui",
     "test": "./scripts/build.sh test"
   },
+  "engines": {
+    "node": "^10.3.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gravaman/fleish.git"

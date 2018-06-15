@@ -5,7 +5,6 @@ Welcome to the playground!
 - [Reinforcement Learning](http://incompleteideas.net/book/bookdraft2017nov5.pdf) (Sutton, Barto)
 
 ## To Do
-- tab icon
+- live
 - mobile
 - cleanup
-- live
