@@ -1,5 +1,6 @@
 .board-container, .replay-overlay-active, .replay-btn, .replay-msg {
   --square-width: 15vw;
+  --main-gutter: 10px;
 }
 
 .base-square {
@@ -9,6 +10,7 @@
 @media screen and (min-width: 768px) {
   .board-container, .replay-overlay-active, .replay-btn, .replay-msg {
     --square-width: 12.5vw;
+    --main-gutter: 10px;
   }
 
   .base-square {
