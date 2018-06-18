@@ -1,21 +1,19 @@
 .game-board {
-  grid-area: game-board;
+
 }
 
 .game-info {
-  grid-area: game-info;
+  max-width: 80%;
+  margin: 20px;
 }
 
 .game {
-  display: grid;
-  grid-template-columns: 1fr calc(var(--main-width) / 2 + var(--main-gutter) * 2) calc(var(--main-width) / 2 + var(--main-gutter) * 2) 1fr;
-  grid-template-rows: calc(var(--main-height) / 12) calc(var(--main-height) / 3 * 2 + var(--main-gutter) * 2) calc(var(--main-height) / 12);
-  grid-template-areas:
-    ". . . ."
-    ". game-board game-info ."
-    ". . . .";
-  align-items: start;
-  justify-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  min-height: 77.5vh;
+  margin: 20px 0;
+  justify-content: center;
+  align-items: center;
   background-color: var(--light-gray);
 }
 
@@ -23,7 +21,7 @@
   text-decoration: underline;
   font-weight: bold;
   width: 50%;
-  margin: auto;
+  margin: 20px auto;
   text-align: center;
 }
 
@@ -32,4 +30,10 @@
   line-height: 1.6;
   text-indent: 25px;
   text-align: justify;
+}
+
+@media screen and (min-width: 768px) {
+  .game-info {
+    max-width: 40%;
+  }
 }

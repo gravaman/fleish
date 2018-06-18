@@ -98,7 +98,7 @@ class Game extends Component {
           />
         </div>
         <div className="game-info">
-          <h2 className="about-title">about</h2>
+          <h2 className="about-title">Tic-Tac-Toe</h2>
           <p className='about-text'>
             { aboutText1 }
           </p>

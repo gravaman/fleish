@@ -1,95 +1,86 @@
+.board-container, .replay-overlay-active, .replay-btn, .replay-msg {
+  --square-width: 15vw;
+}
+
+.base-square {
+  font-size: 14px;
+  background-color: var(--lighter-black);
+}
+
+@media screen and (min-width: 768px) {
+  .board-container, .replay-overlay-active, .replay-btn, .replay-msg {
+    --square-width: 12.5vw;
+  }
+
+  .base-square {
+    font-size: 24px;
+    background-color: var(--lighter-black);
+  }
+}
+
 .position-0 {
   grid-area: board-square-0;
-  height: 100%;
-  width: 100%;
-  background-color: var(--lighter-black);
 }
 
 .position-1 {
   grid-area: board-square-1;
-  height: 100%;
-  width: 100%;
-  background-color: var(--lighter-black);
 }
 
 .position-2 {
   grid-area: board-square-2;
-  height: 100%;
-  width: 100%;
-  background-color: var(--lighter-black);
 }
 
 .position-3 {
   grid-area: board-square-3;
-  height: 100%;
-  width: 100%;
-  background-color: var(--lighter-black);
 }
 
 .position-4 {
   grid-area: board-square-4;
-  height: 100%;
-  width: 100%;
-  background-color: var(--lighter-black);
 }
 
 .position-5 {
   grid-area: board-square-5;
-  height: 100%;
-  width: 100%;
-  background-color: var(--lighter-black);
 }
 
 .position-6 {
   grid-area: board-square-6;
-  height: 100%;
-  width: 100%;
-  background-color: var(--lighter-black);
 }
 
 .position-7 {
   grid-area: board-square-7;
-  height: 100%;
-  width: 100%;
-  background-color:var(--lighter-black);
 }
 
 .position-8 {
   grid-area: board-square-8;
-  height: 100%;
-  width: 100%;
-  background-color: var(--lighter-black);
 }
 
 .board-container {
   position: relative;
   display: grid;
   z-index: 1;
-  grid-template-columns: calc(var(--main-width) / 6) calc(var(--main-width) / 6) calc(var(--main-width) / 6);
-  grid-template-rows: calc(var(--main-height) / 9 * 2) calc(var(--main-height) / 9 * 2) calc(var(--main-height) / 9 * 2);
+  grid-template-columns: repeat(3, var(--square-width));
+  grid-template-rows: repeat(3, var(--square-width));
   grid-template-areas:
     "board-square-0 board-square-1 board-square-2"
     "board-square-3 board-square-4 board-square-5"
     "board-square-6 board-square-7 board-square-8";
   grid-column-gap: 10px;
   grid-row-gap: 10px;
-  align-items: center;
-  justify-items: center;
 }
 
 .replay-overlay-active {
   position: absolute;
   background-color: var(--light-black);
-  width: calc(var(--main-width) / 2 + var(--main-gutter) * 2);
-  height: calc(var(--main-width) / 2 + var(--main-gutter) * 2);
+  width: calc(3 * var(--square-width) + var(--main-gutter) * 2);
+  height: calc(3 * var(--square-width) + var(--main-gutter) * 2);
   z-index: 2;
 }
 
 .replay-btn {
   cursor: pointer;
   position: absolute;
-  width: calc(var(--main-width) / 6 + var(--main-gutter));
-  height: calc(var(--main-height) / 9 * 2  + var(--main-gutter));
+  width: calc(var(--square-width) + var(--main-gutter));
+  height: calc(var(--square-width)  + var(--main-gutter));
   top: 50%;
   transform: translateY(-50%);
   margin-left: 33%;
@@ -100,7 +91,7 @@
   width: 50%;
   margin: auto;
   text-align: center;
-  height: calc(var(--main-height) / 9 * 2);
+  height: calc(var(--square-width) / 3);
   top: 50%;
   transform: translateY(50%);
 }

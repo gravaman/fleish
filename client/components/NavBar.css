@@ -1,5 +1,4 @@
 h1.header {
-  flex: auto;
   margin: auto;
   text-align: center;
   color: white;
@@ -20,7 +19,7 @@ h1.header {
 
 .nav {
   display: flex;
-  height: 150px;
+  height: 12.5vh;
   background-color: var(--main-charcoal);
   background-image: url('../../dist/images/doowop-bg-v4.png');
 }

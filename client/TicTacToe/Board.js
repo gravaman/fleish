@@ -32,7 +32,7 @@ function SquaresList(props) {
   const { squares, onClick } = props
   const listItems = squares.map((player, index) => (
       <div
-        className={'position-' + index }
+        className={'base-square position-' + index }
         key={ index.toString() }
       >
         <Square
