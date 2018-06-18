@@ -96,7 +96,7 @@
 }
 
 .result-msg {
-  width: 50%;
+  width: 75%;
   margin: auto;
   text-align: center;
   height: calc(var(--square-width) / 3);
