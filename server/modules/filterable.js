@@ -1,5 +1,8 @@
+let MetricHandler = require('./metricHandler')
+
 let Filterable = {
   investables: [],
+  metric: null,
   [Symbol.iterator]: function() {
     let investables = this.investables.slice()
 
@@ -8,7 +11,7 @@ let Filterable = {
         if (investables.length > 0) {
           let investable = investables.shift()
           return {
-            value: investable,
+            value: MetricHandler[metric](investable),
             done: false
           }
         }
