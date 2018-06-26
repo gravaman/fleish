@@ -1,118 +1,35 @@
 let moment = require('moment')
 let math = require('mathjs')
 let Calc = require('./calculator')
+let CashFlow = require('./cashFlow')
+let Periods = require('./periods')
 
 math.config({
   number: 'BigNumber',
   precision: 64
 })
 
-let Yielder = function({ rate, cleanPx, redemptionPx = 100, notional = 100, settlement = moment(), exit, frequency = 2, dayCount = 365 }) {
+function Yielder({ rate, cleanPx, redemptionPx = 100, notional = 100, settlement = moment(), exit, frequency = 2, dayCount = 365 }) {
   let periods = Periods({ settlement, exit, frequency })
   let cf = CashFlow({ periods, rate, cleanPx, redemptionPx, notional, dayCount })
 
   let stable = false
   let k = 0
-  const THETA = math.bignumber(0.00001)
-  let d0 = math.bignumber(rate)
-  let d1 = d0
+  let x0 = math.bignumber(rate)
+  let x1 = x0
   while (!stable && k < 1000) {
-    // Newton-Raphson: x1 = x0 - f(x)/f'(x)
-    d1 = math.subtract(d0, math.divide(npv(cf, d0), npvdx(cf, d0)))
-    stable = math.smallerEq(math.abs(math.subtract(d1, d0)), THETA)
+    x1 = Calc.newtRoot({ x0, y: npv(cf, x0), dy: npvdx(cf, x0) })
+    stable = Calc.stable({ x1, x0, theta: 0.00001 })
     k++
-    d0 = d1
+    x0 = x1
   }
-  return d1
-}
-
-function Periods({ settlement = moment(), exit, frequency = 2 }) {
-  const TARGET_DATE = exit.date()
-  const MONTH_DELTA = 12 / frequency
-
-  let dates = []
-  let last = moment(exit)
-
-  while (last > settlement) {
-    dates.unshift(last)
-    let m1 = (12 + last.month() - MONTH_DELTA) % 12
-    let y1 = m1 < last.month() ? last.year() : last.year() - 1
-    let daysInMonth = moment({ year: y1, month:m1 }).daysInMonth()
-
-    last = moment({
-      year: y1,
-      month: m1,
-      date: Math.min(TARGET_DATE, daysInMonth)
-    })
-  }
-  dates.unshift(settlement)
-
-  return {
-    dates,
-    get last() {
-      return this.dates[this.dates.length - 1]
-    }
-  }
-}
-
-function CashFlow({ periods, rate, cleanPx, redemptionPx = 100, notional = 100, dayCount = 365 }) {
-  let scope = {
-    rate: math.bignumber(rate),
-    notional: math.bignumber(notional),
-    cleanPx: math.bignumber(cleanPx),
-    redemptionPx: math.bignumber(redemptionPx)
-  }
-
-  let cf = {
-    pmts: [],
-    set exit(px) {
-      let pmt = this.last
-      pmt.principal = math.bignumber(px)
-    },
-    get first() {
-      return this.pmts[0]
-    },
-    get last() {
-      return this.pmts[this.pmts.length - 1]
-    }
-  }
-
-  let dates = periods.dates.slice(1)
-  let last = periods.dates[0]
-
-  const cNode = math.parse('pct * rate * notional')
-  const cCode = cNode.compile()
-
-  while (dates.length > 0) {
-    let next = dates.shift()
-    let accrued = next.diff(last, 'days')
-
-    scope.pct = math.bignumber(accrued / dayCount)
-
-    cf.pmts.push(Payment({ coupon: cCode.eval(scope), date: next }))
-    last = next
-  }
-
-  let entry = Payment({ date: moment(periods.dates[0]), principal: math.unaryMinus(scope.cleanPx) })
-  cf.pmts.unshift(entry)
-  cf.exit = scope.redemptionPx
-  return cf
+  return x1
 }
 
 function npv(cf, r) {
   function pv(pmt, r) {
-    // const pvNode = math.parse('fv * e^-(r*t)')
-    // const pvCode = pvNode.compile()
-
-    let accrued = pmt.date.diff(moment(), 'days')
-    let dayCount = 365
-    let scope = {
-      t: math.bignumber(accrued / dayCount),
-      r: r,
-      fv: math.add(pmt.coupon, pmt.principal)
-    }
-    // return pvCode.eval(scope)
-    return Calc.pv(scope.fv, scope.r, scope.t)
+    let { fv, t } = pvPrep(pmt)
+    return Calc.pv({ fv, t, r })
   }
 
   let pmts = cf.pmts.slice(1)
@@ -121,29 +38,19 @@ function npv(cf, r) {
 
 function npvdx(cf, r) {
   function pvdx(pmt, r) {
-    const pvNode = math.parse('-fv * t * e^-(r*t)')
-    const pvCode = pvNode.compile()
-
-    let accrued = pmt.date.diff(moment(), 'days')
-    let dayCount = 365
-    let scope = {
-      t: math.bignumber(accrued / dayCount),
-      r: r,
-      fv: math.add(pmt.coupon, pmt.principal)
-    }
-    return pvCode.eval(scope)
+    let { fv, t } = pvPrep(pmt)
+    return Calc.pvdx({ fv, t, r })
   }
 
   let pmts = cf.pmts.slice(1)
   return pmts.reduce((acc, pmt) => math.add(acc, pvdx(pmt, r)), 0)
 }
 
-let Payment = function({ date, coupon = 0, principal = 0 }) {
-  return {
-    date,
-    coupon: math.bignumber(coupon),
-    principal: math.bignumber(principal)
-  }
+function pvPrep(pmt, dayCount = 365) {
+  let accrued = pmt.date.diff(moment(), 'days')
+  let t = math.bignumber(accrued / dayCount)
+  let fv = math.add(pmt.coupon, pmt.principal)
+  return { fv, t }
 }
 
 if (require.main === module) {
