@@ -1,5 +1,6 @@
 let moment = require('moment')
 let math = require('mathjs')
+let Calc = require('./calculator')
 
 math.config({
   number: 'BigNumber',
@@ -100,8 +101,8 @@ function CashFlow({ periods, rate, cleanPx, redemptionPx = 100, notional = 100, 
 
 function npv(cf, r) {
   function pv(pmt, r) {
-    const pvNode = math.parse('fv / e^(r * t)')
-    const pvCode = pvNode.compile()
+    // const pvNode = math.parse('fv * e^-(r*t)')
+    // const pvCode = pvNode.compile()
 
     let accrued = pmt.date.diff(moment(), 'days')
     let dayCount = 365
@@ -110,7 +111,8 @@ function npv(cf, r) {
       r: r,
       fv: math.add(pmt.coupon, pmt.principal)
     }
-    return pvCode.eval(scope)
+    // return pvCode.eval(scope)
+    return Calc.pv(scope.fv, scope.r, scope.t)
   }
 
   let pmts = cf.pmts.slice(1)
@@ -119,7 +121,7 @@ function npv(cf, r) {
 
 function npvdx(cf, r) {
   function pvdx(pmt, r) {
-    const pvNode = math.parse('-fv * t / e^(r*t)')
+    const pvNode = math.parse('-fv * t * e^-(r*t)')
     const pvCode = pvNode.compile()
 
     let accrued = pmt.date.diff(moment(), 'days')
