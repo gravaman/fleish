@@ -1,17 +1,17 @@
 let moment = require('moment')
 
-let Yielder = function({ rate, cleanPx, redemptionPx = 100, notional = 100, settlement = moment(), exit, frequency = 2, dayCount = 360 }) {
+let Yielder = function({ rate, cleanPx, redemptionPx = 100, notional = 100, settlement = moment(), exit, frequency = 2, dayCount = 365 }) {
   let periods = Periods({ settlement, exit, frequency })
   let cf = CashFlow({ periods, rate, cleanPx, redemptionPx, notional, dayCount })
 
   let stable = false
   let k = 0
-  const THETA = 0.0001
+  const THETA = 0.00001
   let d0 = rate
   let d1
   while (!stable && k < 1000) {
     // Newton-Raphson: x1 = x0 - f(x)/f'(x)
-    let d1 = d0 - npv(cf, d0) / npvDx(cf, d0)
+    d1 = d0 - npv(cf, d0) / npvdx(cf, d0)
     stable = Math.abs(d1 - d0) <= THETA
     k++
     d0 = d1
@@ -38,6 +38,7 @@ function Periods({ settlement = moment(), exit, frequency = 2 }) {
       date: Math.min(TARGET_DATE, daysInMonth)
     })
   }
+  dates.unshift(settlement)
 
   return {
     dates,
@@ -47,7 +48,7 @@ function Periods({ settlement = moment(), exit, frequency = 2 }) {
   }
 }
 
-function CashFlow({ periods, rate, cleanPx, redemptionPx = 100, notional = 100, dayCount = 360 }) {
+function CashFlow({ periods, rate, cleanPx, redemptionPx = 100, notional = 100, dayCount = 365 }) {
   let cf = {
     pmts: [],
     set exit(px) {
@@ -62,12 +63,15 @@ function CashFlow({ periods, rate, cleanPx, redemptionPx = 100, notional = 100, 
     }
   }
 
-  let dates = periods.dates.slice(1, periods.dates.length - 1)
-  dates.forEach((date, i) => {
-    let next = periods.dates[i + 2]
-    let coupon = next.diff(date, 'days') / dayCount * rate * notional
-    cf.pmts.push(Payment({ coupon, date }))
-  })
+  let dates = periods.dates.slice(1)
+  let last = periods.dates[0]
+
+  while (dates.length > 0) {
+    let next = dates.shift()
+    let coupon = next.diff(last, 'days') / dayCount * rate * notional
+    cf.pmts.push(Payment({ coupon, date: next }))
+    last = next
+  }
 
   let entry = Payment({ date: moment(periods.dates[0]), principal: -cleanPx })
   cf.pmts.unshift(entry)
@@ -77,23 +81,22 @@ function CashFlow({ periods, rate, cleanPx, redemptionPx = 100, notional = 100, 
 
 function npv(cf, d) {
   function pv(pmt, d) {
-    let settlement
-    return (pmt.coupon + pmt.principal) / (1 + d)^((pmt.date - settlement)/365)
+    let t = pmt.date.diff(moment(), 'days') / 365
+    return (pmt.coupon + pmt.principal) / Math.exp(d * t)
   }
 
-  let cf1 = cf.slice(1)
-  return cf1.reduce((acc, pmt) => acc + pv(pmt, d)) - cf[0]
+  let pmts = cf.pmts.slice(1)
+  return pmts.reduce((acc, pmt) => acc + pv(pmt, d), cf.first.principal)
 }
 
-function npvDx(cf, d) {
+function npvdx(cf, d) {
   function pvdx(pmt, d) {
-    let settlement
-    let t = (pmt.date - settlement) / 365
-    return (pmt.coupon + pmt.principal) / (t * (1 + d)^(t - 1))
+    let t = pmt.date.diff(moment(), 'days') / 365
+    return (-(pmt.coupon + pmt.principal) * t) / Math.exp(d * t)
   }
 
-  let cf1 = cf.slice(1)
-  return cf1.reduce((acc, pmt) => acc + pvdx(pmt, d))
+  let pmts = cf.pmts.slice(1)
+  return pmts.reduce((acc, pmt) => acc + pvdx(pmt, d), 0)
 }
 
 let Payment = function({ date, coupon = 0, principal = 0 }) {
@@ -105,13 +108,45 @@ let Payment = function({ date, coupon = 0, principal = 0 }) {
 }
 
 if (require.main === module) {
-  let exit = moment({ year: 2023, month: 7, date: 31 })
+  let exit = moment({ year: 2023, month: 11, date: 28 })
   let rate = 0.055
-  let cleanPx = 98
+  let cleanPx = 100
+
+  let bondYield = Yielder({ rate, cleanPx, exit })
 
   let periods = Periods({ exit })
-  let cf = CashFlow({ periods, rate, cleanPx })
-  console.log('the cf:', cf)
+  let pmtDates = periods.dates.slice(1)
+
+  let entry = periods.dates[0]
+  let m1 = (12 + entry.month() - 6) % 12
+  let y1 = m1 < entry.month() ? entry.year() : entry.year() - 1
+  let daysInMonth = moment({ year: y1, month:m1 }).daysInMonth()
+
+  let last = moment({
+    year: y1,
+    month: m1,
+    date: Math.min(exit.date(), daysInMonth)
+  })
+
+  let accruedPct = entry.diff(last, 'days') / pmtDates[0].diff(last, 'days')
+  console.log('accruedPct:', accruedPct)
+
+  let annuity = pmtDates.reduce((acc, date, i) => {
+    let t = date.diff(moment(), 'days') / 365
+    let inc = Math.exp(-bondYield * t)
+    if (i === 0) {
+      inc *= (1 - accruedPct)
+    }
+    return acc + inc
+  }, 0)
+
+  let t = exit.diff(moment(), 'days') / 365
+  let terminal = 100 * Math.exp(-bondYield * t)
+  let parYield = (100 - terminal) * 2 / annuity
+
+  console.log('bond yield:', bondYield)
+  console.log('par yield:', parYield)
+
 } else {
   module.exports = Yielder
 }
