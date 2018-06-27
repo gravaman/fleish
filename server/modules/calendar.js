@@ -38,14 +38,31 @@ let DateHelper = {
     }
     return selectRandom(mos)
   },
-  randomDay: (month = 1, leap = true, { min = 1, length = DateHelper.daysInMonth(month, leap) } = {}) => {
+  randomDay: ({ month = 1, leap = true, min = 1, length } = {}) => {
+    length = DateHelper.daysInMonth(month, leap)
     return selectRandom(Range(min, length))
   },
-  randomDate: (leap = true, { min = moment(), length = 10 } = {}) => {
+  randomDate: ({ leap = true, min = moment(), length = 10, eom = true } = {}) => {
     length = moment.duration({ years: length })
     let days = length.asDays()
     let duration = moment.duration({ days: randomInclusive(0, days) })
-    return min.add(duration)
+    let date = min.add(duration)
+
+    if (eom) {
+      return date
+    }
+
+    let k = 0
+    while (date.date() === date.daysInMonth() && k < 100) {
+      duration = moment.duration({ days: randomInclusive(0, days) })
+      date = min.add(duration)
+      k++
+    }
+
+    if (date.date() === date.daysInMonth()) {
+      throw `Could only find date at end of month!`
+    }
+    return date
   }
 }
 
