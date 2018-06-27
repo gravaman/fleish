@@ -3,14 +3,13 @@
 ENV_TYPE=$1
 LOCAL_PORT=8080
 SERVER_PATH="server/index.js"
-TEST_PATH="server/tests/index.js"
+TEST_PATH="server/tests/*/*.js"
 WEBPACK_DEV_PATH="./webpack.config.js"
 WEBPACK_PROD_PATH="./webpack.prod.config.js"
 
 if [[ "$ENV_TYPE" = "test" ]]
 then
   START_PATH="$TEST_PATH"
-  WEBPACK_PATH="$WEBPACK_DEV_PATH"
 elif [[ "$ENV_TYPE" = "dev" ]]
 then
   START_PATH="$SERVER_PATH"
@@ -35,6 +34,9 @@ then
 elif [[ "$ENV_TYPE" = "production" ]]
 then
   npx webpack --config $WEBPACK_PATH
+elif [[ "$ENV_TYPE" = "test" ]]
+then
+  node_modules/.bin/tape $START_PATH
 else
   npx webpack --config $WEBPACK_PATH
   node $START_PATH
