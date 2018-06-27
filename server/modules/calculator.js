@@ -13,14 +13,18 @@ const stableCode = math.parse('abs(x1 - x0) <= theta').compile()
 const compoundMCode = math.parse('m * (e^(rc / m) - 1)')
 const continuousMCode = math.parse('m * ln(1 + rm / m)')
 
-function biggify(argsObj) {
-  Object.entries(argsObj)
+function biggify(args) {
+  if (Array.isArray(args)) {
+    return args.map(arg => typeof arg === 'number' ? math.bignumber(arg) : arg)
+  }
+
+  Object.entries(args)
     .forEach(([key, val]) => {
       if (typeof val === 'number') {
-        argsObj[key] = math.bignumber(val)
+        args[key] = math.bignumber(val)
       }
     })
-  return argsObj
+  return args
 }
 
 let Calculator = {
@@ -54,6 +58,22 @@ let Calculator = {
   },
   neg(num) {
     return math.unaryMinus(biggify(num))
+  },
+  add(...args) {
+    let [ num0, num1 ] = biggify(args)
+    return math.add(num0, num1)
+  },
+  subtract(...args) {
+    let [ num0, num1 ] = biggify(args)
+    return math.subtract(num0, num1)
+  },
+  multiply(...args) {
+    let [num0, num1 ] = biggify(args)
+    return math.multiply(num0, num1)
+  },
+  divide(...args) {
+    let [ dividend, divisor ] = biggify(args)
+    return math.divide(dividend, divisor)
   }
 }
 

@@ -1,26 +1,16 @@
 let moment = require('moment')
-let math = require('mathjs')
 let Calc = require('./calculator')
 
-math.config({
-  number: 'BigNumber',
-  precision: 64
-})
-
 function Payment({ date, coupon = 0, principal = 0 }) {
-  return {
-    date,
-    coupon: math.bignumber(coupon),
-    principal: math.bignumber(principal)
-  }
+  return { date, coupon, principal }
 }
 
-let CashFlow = function({ periods, rate, cleanPx, redemptionPx = 100, notional = 100, dayCount = 365 }) {
+let CashFlow = function({ periods, r, cleanPx, redemptionPx = 100, notional = 100, dayCount = 365 }) {
   let cf = {
     pmts: [],
     set exit(px) {
       let pmt = this.last
-      pmt.principal = math.bignumber(px)
+      pmt.principal = px
     },
     get first() {
       return this.pmts[0]
@@ -40,10 +30,10 @@ let CashFlow = function({ periods, rate, cleanPx, redemptionPx = 100, notional =
   while (dates.length > 0) {
     let next = dates.shift()
     let accrued = next.diff(last, 'days')
-    let t = math.bignumber(accrued / dayCount)
+    let t = Calc.divide(accrued, dayCount)
 
     let pmt = Payment({
-      coupon: Calc.couponPmt({ t, r: rate, p: notional }),
+      coupon: Calc.couponPmt({ t, r, p: notional }),
       date: next
     })
     cf.pmts.push(pmt)

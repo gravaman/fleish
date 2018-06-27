@@ -1,21 +1,15 @@
 let moment = require('moment')
-let math = require('mathjs')
 let Calc = require('./calculator')
 let CashFlow = require('./cashFlow')
 let Periods = require('./periods')
 
-math.config({
-  number: 'BigNumber',
-  precision: 64
-})
-
-function yld({ rate, cleanPx, redemptionPx = 100, notional = 100, settlement = moment(), exit, frequency = 2, dayCount = 365 }) {
+function yld({ r, cleanPx, redemptionPx = 100, notional = 100, settlement = moment(), exit, frequency = 2, dayCount = 365 }) {
   let periods = Periods({ settlement, exit, frequency })
-  let cf = CashFlow({ periods, rate, cleanPx, redemptionPx, notional, dayCount })
+  let cf = CashFlow({ periods, r, cleanPx, redemptionPx, notional, dayCount })
 
   let stable = false
   let k = 0
-  let x0 = math.bignumber(rate)
+  let x0 = r
   let x1 = x0
   while (!stable && k < 1000) {
     x1 = Calc.newtRoot({ x0, y: npv(cf, x0), dy: npvdx(cf, x0) })
@@ -35,7 +29,7 @@ function npv(cf, r) {
   }
 
   let pmts = cf.pmts.slice(1)
-  return  pmts.reduce((acc, pmt) => math.add(acc, pv(pmt, r)), math.bignumber(cf.first.principal))
+  return  pmts.reduce((acc, pmt) => Calc.add(acc, pv(pmt, r)), cf.first.principal)
 }
 
 function npvdx(cf, r) {
@@ -45,22 +39,22 @@ function npvdx(cf, r) {
   }
 
   let pmts = cf.pmts.slice(1)
-  return pmts.reduce((acc, pmt) => math.add(acc, pvdx(pmt, r)), 0)
+  return pmts.reduce((acc, pmt) => Calc.add(acc, pvdx(pmt, r)), 0)
 }
 
 function pvPrep(pmt, dayCount = 365) {
   let accrued = pmt.date.diff(moment(), 'days')
-  let t = math.bignumber(accrued / dayCount)
-  let fv = math.add(pmt.coupon, pmt.principal)
+  let t = Calc.divide(accrued, dayCount)
+  let fv = Calc.add(pmt.coupon, pmt.principal)
   return { fv, t }
 }
 
 if (require.main === module) {
   let exit = moment({ year: 2023, month: 11, date: 28 })
-  let rate = math.bignumber(0.055)
-  let cleanPx = math.bignumber(100)
+  let r = 0.055
+  let cleanPx = 100
 
-  let y1 = yld({ rate, cleanPx, exit })
+  let y1 = yld({ r, cleanPx, exit })
   console.log('yield:', y1.toString())
 } else {
   module.exports = { yld }
