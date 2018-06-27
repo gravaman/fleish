@@ -9,7 +9,8 @@ math.config({
   precision: 64
 })
 
-function Yielder({ rate, cleanPx, redemptionPx = 100, notional = 100, settlement = moment(), exit, frequency = 2, dayCount = 365 }) {
+function bondYld({ rate, cleanPx, redemptionPx = 100, notional = 100, settlement = moment(), exit, frequency = 2, dayCount = 365 }) {
+  // continuous compounding
   let periods = Periods({ settlement, exit, frequency })
   let cf = CashFlow({ periods, rate, cleanPx, redemptionPx, notional, dayCount })
 
@@ -23,7 +24,22 @@ function Yielder({ rate, cleanPx, redemptionPx = 100, notional = 100, settlement
     k++
     x0 = x1
   }
+
   return x1
+}
+
+function ytm({ ...args }) {
+  // mirrors underlying pmt structure
+  let bondYield = bondYld({ ...args })
+  return toYtm(bondYield)
+}
+
+function toYtm({ m = 2, rc }) {
+  return Calc.compoundM({ m, rc })
+}
+
+function toBondYld({ m = 2, rm }) {
+  return Calc.continuousM({ m, rm })
 }
 
 function npv(cf, r) {
@@ -58,8 +74,11 @@ if (require.main === module) {
   let rate = math.bignumber(0.055)
   let cleanPx = math.bignumber(100)
 
-  let bondYield = Yielder({ rate, cleanPx, exit })
-  console.log('bond yield:', bondYield.toString())
+  // let bondYield = Yielder({ rate, cleanPx, exit })
+  // console.log('bond yield:', bondYield.toString())
+  let ytom = ytm({ rate, cleanPx, exit })
+  // let ytm = Calc.equivM({ m: 2, rc: bondYield })
+  console.log('ytm:', ytom.toString())
 
   // let periods = Periods({ exit })
   // let pmtDates = periods.dates.slice(1)
@@ -91,5 +110,10 @@ if (require.main === module) {
   // let parYield = (100 - terminal) * 2 / annuity
 
 } else {
-  module.exports = Yielder
+  module.exports = {
+    bondYld,
+    ytm,
+    toYtm,
+    toBondYld
+  }
 }

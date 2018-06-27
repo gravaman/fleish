@@ -10,6 +10,8 @@ const pvdxCode = math.parse('-fv * t * e^-(r*t)').compile()
 const couponPmtCode = math.parse('t * r * p').compile()
 const newtRootCode = math.parse('x0 - y / dy').compile()
 const stableCode = math.parse('abs(x1 - x0) <= theta').compile()
+const compoundMCode = math.parse('m * (e^(rc / m) - 1)')
+const continuousMCode = math.parse('m * ln(1 + rm / m)')
 
 function biggify(argsObj) {
   Object.entries(argsObj)
@@ -41,6 +43,14 @@ let Calculator = {
   stable({ ...args }) {
     let { x0, x1, theta } = biggify(args)
     return stableCode.eval({ x0, x1, theta })
+  },
+  compoundM({ ...args }) {
+    let { m, rc } = biggify(args)
+    return compoundMCode.eval({ m, rc })
+  },
+  continousM({ ...args }) {
+    let { m, rm } = biggify(args)
+    return continuousMCode.eval({ m, rm })
   },
   neg(num) {
     return math.unaryMinus(biggify(num))
