@@ -5,7 +5,7 @@ const US_30_360 = Symbol.for('30/360 US Bond Basis')
 
 function Convention(key) {
   switch (key) {
-    case [US_30_360]:
+    case US_30_360:
       return {
         daysInMonth: 30,
         daysInYear: 360,
@@ -17,40 +17,33 @@ function Convention(key) {
   }
 }
 
-function DayCounter() {
-  factor({ start, end = moment()}) {
-    let convention = Convention(dayCount)
-    start = moment(start)
-    end = moment(end)
+function accrued(dt1, dt2, { convention = Convention(US_30_360) } = {}) {
+  let d1 = dt1.date()
+  let d2 = dt2.date()
 
-    let yearVar = (end.year() - start.year()) * convention.daysInYear
-    let monthVar = (end.month() - start.month()) * convention.daysInMonth
-
-    let d2 = end.date()
-    let d1 = start.date()
-
-    let eof2 = end.isLeapYear() ? convention.leapEOM : convention.febEOM
-    let eof1 = start.isLeapYear() ? convention.leapEOM : convention.febEOM
-
-    if (d2 === d1 === eof2) {
-      d2 = convention.daysInMonth
-    }
-
-    if (d1 === eof1) {
-      d1 = convention.daysInMonth
-    }
-
-    if (d2 > convention.daysInMonth && d1 >= convention.daysInMonth) {
-      d2 = convention.daysInMonth
-    }
-
-    if (d1 > convention.daysInMonth) {
-      d1 = convention.daysInMonth
-    }
-    let dayVar = d2 - d1
-
-    return (yearVar + monthVar + dayVar) / convention.daysInYear
+  if (d1 == d2 == (convention.leapEOM || convention.febEOM)) {
+    d2 = convention.daysInMonth
   }
+
+  if (d1 === (convention.leapEOM || convention.febEOM)) {
+    d1 = convention.daysInMonth
+  }
+
+  if (d2 > convention.daysInMonth && d1 >= convention.daysInMonth) {
+    d2 = convention.daysInMonth
+  }
+
+  if (d1 > convention.daysInMonth) {
+    d1 = convention.daysInMonth
+  }
+
+  let d = d2 - d1
+  let y = (dt2.year() - dt1.year()) * convention.daysInYear
+  let m = (dt2.month() - dt1.month()) * convention.daysInMonth
+
+  return y + m + d
 }
 
-module.exports = DayCounter
+module.exports = {
+  accrued
+}
