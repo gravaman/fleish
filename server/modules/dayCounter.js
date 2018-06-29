@@ -71,6 +71,9 @@ function factor(...args) {
 }
 
 module.exports = {
+  Conventions: {
+    US_30_360: Convention(US_30_360)
+  },
   yearVar,
   monthVar,
   dayVar,

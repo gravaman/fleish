@@ -2,10 +2,11 @@ let moment = require('moment')
 let Calc = require('./calculator')
 let CashFlow = require('./cashFlow')
 let Periods = require('./periods')
+let DayCounter = require('./dayCounter')
 
-function yld({ r, cleanPx, redemptionPx = 100, notional = 100, settlement = moment(), exit, frequency = 2, dayCount = 365 }) {
+function yld({ r, cleanPx, redemptionPx = 100, notional = 100, settlement = moment(), exit, frequency = 2, convention = DayCounter.Conventions.US_30_360 }) {
   let periods = Periods({ settlement, exit, frequency })
-  let cf = CashFlow({ periods, r, cleanPx, redemptionPx, notional, dayCount })
+  let cf = CashFlow({ periods, r, cleanPx, redemptionPx, notional, convention })
 
   let stable = false
   let k = 0
@@ -42,9 +43,9 @@ function npvdx(cf, r) {
   return pmts.reduce((acc, pmt) => Calc.add(acc, pvdx(pmt, r)), 0)
 }
 
-function pvPrep(pmt, dayCount = 365) {
+function pvPrep(pmt, convention = DayCounter.Conventions.US_30_360) {
   let accrued = pmt.date.diff(moment(), 'days')
-  let t = Calc.divide(accrued, dayCount)
+  let t = Calc.divide(accrued, convention.daysInYear)
   let fv = Calc.add(pmt.coupon, pmt.principal)
   return { fv, t }
 }
