@@ -6,7 +6,7 @@ function Payment({ date, coupon = 0, principal = 0 }) {
   return { date, coupon, principal }
 }
 
-let CashFlow = function({ periods, r, cleanPx, redemptionPx = 100, notional = 100, convention = DayCounter.Conventions.US_30_360 }) {
+let CashFlow = function({ periods, r, cleanPx, redemptionPx = 100, notional = 100, convention = DayCounter.Conventions.US_30_360, frequency = 2 } = {}) {
   let cf = {
     pmts: [],
     set exit(px) {
@@ -30,11 +30,10 @@ let CashFlow = function({ periods, r, cleanPx, redemptionPx = 100, notional = 10
   let [last, ...dates] = periods.dates.slice()
   while (dates.length > 0) {
     let next = dates.shift()
-    let accrued = next.diff(last, 'days')
-    let t = Calc.divide(accrued, convention.daysInYear)
+    let t = DayCounter.factor(last, next, { convention, frequency })
 
     let pmt = Payment({
-      coupon: Calc.couponPmt({ t, r, p: notional }),
+      coupon: Calc.couponPmt({ t, r, m: frequency, p: notional }),
       date: next
     })
     cf.pmts.push(pmt)

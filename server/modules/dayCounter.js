@@ -66,8 +66,9 @@ function accrued(dt1, dt2, { convention = Convention(US_30_360) } = {}) {
   return y + m + d
 }
 
-function factor(...args) {
-  return Calculator.divide(accrued(...args), 360)
+function factor(dt1, dt2, { convention = Convention(US_30_360), frequency = 2 } = {}) {
+  let divisor = Calculator.divide(convention.daysInYear, frequency)
+  return Calculator.divide(accrued(dt1, dt2, { convention }), divisor)
 }
 
 module.exports = {

@@ -43,9 +43,9 @@ function npvdx(cf, r) {
   return pmts.reduce((acc, pmt) => Calc.add(acc, pvdx(pmt, r)), 0)
 }
 
-function pvPrep(pmt, convention = DayCounter.Conventions.US_30_360) {
+function pvPrep(pmt) {
   let accrued = pmt.date.diff(moment(), 'days')
-  let t = Calc.divide(accrued, convention.daysInYear)
+  let t = Calc.divide(accrued, 365)
   let fv = Calc.add(pmt.coupon, pmt.principal)
   return { fv, t }
 }

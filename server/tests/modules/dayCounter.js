@@ -4,8 +4,8 @@ let DayCounter = require('../../modules/dayCounter')
 let Calendar = require('../../modules/calendar')
 let Calculator = require('../../modules/calculator')
 
-function expFactor(num) {
-  return Calculator.divide(num, 360)
+function expFactor(num, m = 2) {
+  return Calculator.divide(num, 360 / m)
 }
 
 let tests = [
