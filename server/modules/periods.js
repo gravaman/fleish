@@ -1,35 +1,57 @@
 let moment = require('moment')
 
-function Periods({ settlement = moment(), exit, frequency = 2 }) {
-  const TARGET_DATE = exit.date()
-  const MONTH_DELTA = 12 / frequency
+let Schedule = {
+  setState: function(update) {
+    Object.assign(this.state, update)
+  },
+  build: function() {
+    let { targetDate, settlement, exit, monthDelta } = this.state
 
-  let dates = []
-  let last = moment(exit)
+    let last = moment(exit)
+    let dates = []
 
-  while (last > settlement) {
-    dates.unshift(last)
-    let m1 = (12 + last.month() - MONTH_DELTA) % 12
-    let y1 = m1 < last.month() ? last.year() : last.year() - 1
+    while (last > settlement) {
+      dates.unshift(last)
+      last = this.prior(last)
+    }
+    dates.unshift(settlement)
+    this.setState({ dates })
+  },
+  prior: function(dt2) {
+    let { targetDate, monthDelta, issuance } = this.state
+    let m1 = (12 + dt2.month() - monthDelta) % 12
+    let y1 = m1 < dt2.month() ? dt2.year() : dt2.year() - 1
     let daysInMonth = moment({ year: y1, month:m1 }).daysInMonth()
 
-    last = moment({
+    let dt = moment({
       year: y1,
       month: m1,
-      date: Math.min(TARGET_DATE, daysInMonth)
+      date: Math.min(targetDate, daysInMonth)
     })
+    return issuance && dt.isBefore(issuance) ? issuance : dt
+  },
+  get first() {
+    let { dates } = this.state
+    return dates[0]
+  },
+  get last() {
+    let { dates } = this.state
+    return dates[dates.length - 1]
   }
-  dates.unshift(settlement)
+}
 
-  return {
-    dates,
-    get last() {
-      return this.dates[this.dates.length - 1]
-    },
-    get first() {
-      return this.dates[0]
-    }
+function Periods({ settlement = moment(), exit, issuance = null, frequency = 2 }) {
+  let schedule = Object.create(Schedule)
+  schedule.state = {
+    settlement,
+    exit,
+    issuance,
+    targetDate: exit.date(),
+    monthDelta: 12 / frequency,
+    dates: []
   }
+  schedule.build()
+  return schedule
 }
 
 module.exports = Periods

@@ -51,11 +51,12 @@ function pvPrep(pmt) {
 }
 
 if (require.main === module) {
-  let exit = moment({ year: 2023, month: 11, date: 28 })
+  let settlement = moment({ year: 2018, month: 5, date: 28 })
+  let exit = moment({ year: 2023, month: 5, date: 28 })
   let r = 0.055
   let cleanPx = 100
 
-  let y1 = yld({ r, cleanPx, exit })
+  let y1 = yld({ r, cleanPx, settlement, exit })
   console.log('yield:', y1.toString())
 } else {
   module.exports = { yld }
