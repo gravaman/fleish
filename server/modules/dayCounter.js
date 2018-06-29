@@ -1,6 +1,7 @@
 let moment = require('moment')
 let math = require('mathjs')
 let Calendar = require('./calendar')
+let Calculator = require('./calculator')
 
 const US_30_360 = Symbol.for('30/360 US Bond Basis')
 
@@ -53,7 +54,7 @@ function dayVar(dt1, dt2, { convention = Convention(US_30_360 ) } = {}) {
   if (d1 > convention.daysInMonth) {
     d1 = convention.daysInMonth
   }
-  
+
   return d2 - d1
 }
 
@@ -65,9 +66,14 @@ function accrued(dt1, dt2, { convention = Convention(US_30_360) } = {}) {
   return y + m + d
 }
 
+function factor(...args) {
+  return Calculator.divide(accrued(...args), 360)
+}
+
 module.exports = {
   yearVar,
   monthVar,
   dayVar,
-  accrued
+  accrued,
+  factor
 }

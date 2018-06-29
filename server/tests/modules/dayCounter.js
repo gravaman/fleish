@@ -2,7 +2,11 @@ let test = require('tape')
 let moment = require('moment')
 let DayCounter = require('../../modules/dayCounter')
 let Calendar = require('../../modules/calendar')
-let { randomInts } = require('../../modules/utilities')
+let Calculator = require('../../modules/calculator')
+
+function expFactor(num) {
+  return Calculator.divide(num, 360)
+}
 
 let tests = [
   {
@@ -61,9 +65,10 @@ let tests = [
       let dt1 = moment({ year: 2021, month: 1, date: 28 })
       let dt2 = moment({ year: 2022, month: 1, date: 15 })
 
-      let expected = (dt2.year() - dt1.year()) * 360 + dt2.date() - 30
-      let result = DayCounter.accrued(dt1, dt2)
-      t.equal(result, expected)
+      let expVar = (dt2.year() - dt1.year()) * 360 + dt2.date() - 30
+      let expected = expFactor(expVar)
+      let result = DayCounter.factor(dt1, dt2)
+      t.equal(result.toString(), expected.toString())
     }
   },
   {
@@ -73,9 +78,10 @@ let tests = [
       let dt1 = moment({ year: 2020, month: 1, date: 29 })
       let dt2 = moment({ year: 2021, month: 1, date: 15 })
 
-      let expected = (dt2.year() - dt1.year()) * 360 + dt2.date() - 30
-      let result = DayCounter.accrued(dt1, dt2)
-      t.equal(result, expected)
+      let expVar = (dt2.year() - dt1.year()) * 360 + dt2.date() - 30
+      let expected = expFactor(expVar)
+      let result = DayCounter.factor(dt1, dt2)
+      t.equal(result.toString(), expected.toString())
     }
   },
   {
@@ -85,9 +91,10 @@ let tests = [
       let dt1 = moment({ year: 2021, month: 1, date: 13 })
       let dt2 = moment({ year: 2022, month: 1, date: 28 })
 
-      let expected = (dt2.year() - dt1.year()) * 360 + dt2.date() - dt1.date()
-      let result = DayCounter.accrued(dt1, dt2)
-      t.equal(result, expected)
+      let expVar = (dt2.year() - dt1.year()) * 360 + dt2.date() - dt1.date()
+      let expected = expFactor(expVar)
+      let result = DayCounter.factor(dt1, dt2)
+      t.equal(result.toString(), expected.toString())
     }
   },
   {
@@ -97,9 +104,10 @@ let tests = [
       let dt1 = moment({ year: 2021, month: 1, date: 17 })
       let dt2 = moment({ year: 2024, month: 1, date: 29 })
 
-      let expected = (dt2.year() - dt1.year()) * 360 + dt2.date() - dt1.date()
-      let result = DayCounter.accrued(dt1, dt2)
-      t.equal(result, expected)
+      let expVar = (dt2.year() - dt1.year()) * 360 + dt2.date() - dt1.date()
+      let expected = expFactor(expVar)
+      let result = DayCounter.factor(dt1, dt2)
+      t.equal(result.toString(), expected.toString())
     }
   },
   {
@@ -109,9 +117,10 @@ let tests = [
       let dt1 = moment({ year: 2020, month: 1, date: 29 })
       let dt2 = moment({ year: 2021, month: 1, date: 28 })
 
-      let expected = (dt2.year() - dt1.year()) * 360
-      let result = DayCounter.accrued(dt1, dt2)
-      t.equal(result, expected)
+      let expVar = (dt2.year() - dt1.year()) * 360
+      let expected = expFactor(expVar)
+      let result = DayCounter.factor(dt1, dt2)
+      t.equal(result.toString(), expected.toString())
     }
   },
   {
@@ -121,9 +130,10 @@ let tests = [
       let dt1 = moment({ year: 2021, month: 1, date: 28 })
       let dt2 = moment({ year: 2024, month: 1, date: 29 })
 
-      let expected = (dt2.year() - dt1.year()) * 360
-      let result = DayCounter.accrued(dt1, dt2)
-      t.equal(result, expected)
+      let expVar = (dt2.year() - dt1.year()) * 360
+      let expected = expFactor(expVar)
+      let result = DayCounter.factor(dt1, dt2)
+      t.equal(result.toString(), expected.toString())
     }
   },
   {
@@ -133,9 +143,10 @@ let tests = [
       let dt1 = moment({ year: 2020, month: 1, date: 29 })
       let dt2 = moment({ year: 2024, month: 1, date: 29 })
 
-      let expected = (dt2.year() - dt1.year()) * 360
-      let result = DayCounter.accrued(dt1, dt2)
-      t.equal(result, expected)
+      let expVar = (dt2.year() - dt1.year()) * 360
+      let expected = expFactor(expVar)
+      let result = DayCounter.factor(dt1, dt2)
+      t.equal(result.toString(), expected.toString())
     }
   },
   {
@@ -146,14 +157,16 @@ let tests = [
       let dt2 = moment({ year: 2025, month: 11, date: 31 })
       let dt3 = moment({ year: 2025, month: 10, date: 30 })
 
-      let expected1 = (dt2.year() - dt1.year()) * 360 + (dt2.month() - dt1.month()) * 30
-      let result1 = DayCounter.accrued(dt1, dt2)
+      let expVar1 = (dt2.year() - dt1.year()) * 360 + (dt2.month() - dt1.month()) * 30
+      let expected1 = expFactor(expVar1)
+      let result1 = DayCounter.factor(dt1, dt2)
 
-      let expected2 = (dt3.year() - dt1.year()) * 360 + (dt3.month() - dt1.month()) * 30
-      let result2 = DayCounter.accrued(dt1, dt3)
+      let expVar2 = (dt3.year() - dt1.year()) * 360 + (dt3.month() - dt1.month()) * 30
+      let expected2 = expFactor(expVar2)
+      let result2 = DayCounter.factor(dt1, dt3)
 
-      t.equal(result1, expected1)
-      t.equal(result2, expected2)
+      t.equal(result1.toString(), expected1.toString())
+      t.equal(result2.toString(), expected2.toString())
     }
   },
   {
@@ -163,9 +176,10 @@ let tests = [
       let dt1 = moment({ year: 2020, month: 9, date: 31 })
       let dt2 = moment({ year: 2024, month: 1, date: 29 })
 
-      let expected = (dt2.year() - dt1.year()) * 360 + (dt2.month() - dt1.month()) * 30 + dt2.date() - 30
-      let result = DayCounter.accrued(dt1, dt2)
-      t.equal(result, expected)
+      let expVar = (dt2.year() - dt1.year()) * 360 + (dt2.month() - dt1.month()) * 30 + dt2.date() - 30
+      let expected = expFactor(expVar)
+      let result = DayCounter.factor(dt1, dt2)
+      t.equal(result.toString(), expected.toString())
     }
   },
   {
@@ -175,9 +189,10 @@ let tests = [
       let dt1 = moment({ year: 2020, month: 10, date: 30 })
       let dt2 = moment({ year: 2025, month: 1, date: 12 })
 
-      let expected = (dt2.year() - dt1.year()) * 360 + (dt2.month() - dt1.month()) * 30 + dt2.date() - dt1.date()
-      let result = DayCounter.accrued(dt1, dt2)
-      t.equal(result, expected)
+      let expVar = (dt2.year() - dt1.year()) * 360 + (dt2.month() - dt1.month()) * 30 + dt2.date() - dt1.date()
+      let expected = expFactor(expVar)
+      let result = DayCounter.factor(dt1, dt2)
+      t.equal(result.toString(), expected.toString())
     }
   }
 ]
