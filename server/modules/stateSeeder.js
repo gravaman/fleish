@@ -16,7 +16,7 @@ let Seeder = {
 
     this.setState({ data })
   },
-  getData: function(size) {
+  buildData: function(size) {
     let { base, length, mask0 } = this.state
     let s0 = base
 
@@ -35,11 +35,15 @@ let Seeder = {
         }
       }
     }
-    return this.state.data
+  },
+  getSeeds() {
+    let { data } = this.state
+    return data.map(bin => bin.toString(2).split('').slice(1))
   }
 }
 
-function getSeed(size) {
+function getSeeds(keys) {
+  let size = keys.length
   let seed = Object.create(Seeder)
   seed.state = {
     length: size,
@@ -48,7 +52,8 @@ function getSeed(size) {
     data: []
   }
 
-  return seed.getData(size)
+  seed.buildData(size)
+  return seed.getSeeds()
 }
 
-module.exports = { getSeed }
+module.exports = { getSeeds }

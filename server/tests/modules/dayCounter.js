@@ -3,117 +3,183 @@ let moment = require('moment')
 let DayCounter = require('../../modules/dayCounter')
 let Calendar = require('../../modules/calendar')
 let { randomInts } = require('../../modules/utilities')
-let Seeder = require('../../modules/stateSeeder')
 
-let states = Seeder.getSeed(4)
+let tests = [
+  {
+    msg: 'y1 === y2',
+    code: (t) => {
+      t.plan(1)
+      let dt1 = Calendar.randomDate()
+      let dt2 = moment(dt1)
+      let result = DayCounter.yearVar(dt1, dt2)
+      t.equal(result, 0)
+    }
+  },
+  {
+    msg: 'y1 !== y2',
+    code: (t) => {
+      t.plan(1)
+      let dt1 = Calendar.randomDate()
+      let dt2 = Calendar.randomDate()
 
-states.forEach(s => console.log(s.toString(2)))
-console.log('********')
-console.log('state count:', states.length)
+      let delta = 3
+      let expected = delta * 360
+      dt2.year(dt1.year() + delta)
 
+      let result = DayCounter.yearVar(dt1, dt2)
+      t.equal(result, expected)
+    }
+  },
+  {
+    msg: 'm1 === m2',
+    code: (t) => {
+      t.plan(1)
+      let dt1 = Calendar.randomDate()
+      let dt2 = moment(dt1)
+      let result = DayCounter.monthVar(dt1, dt2)
+      t.equal(result, 0)
+    }
+  },
+  {
+    msg: 'm1 !== m2',
+    code: (t) => {
+      t.plan(1)
+      let dt1 = Calendar.randomDate()
+      let dt2 = moment(dt1)
+      let m2 = Calendar.randomMonth({ exclude: dt1.month() })
+      dt2.month(m2)
 
-// test('d1: not leap, d2: not leap', function(t) {
-//   t.plan(3)
-//   let dt1, dt2, accrued, year
-//
-//   // same date
-//   dt1 = Calendar.randomDate({ leap: false, eom: false })
-//   dt2 = moment(dt1)
-//
-//   accrued = DayCounter.accrued(dt1, dt2)
-//   t.equal(accrued, 0, `same date accrued (accrued: ${ accrued })`)
-//
-//   // end of feb
-//   year = Calendar.randomYear({ leap: false })
-//   dt1 = moment({ year, month: 1, date: 28 })
-//   dt2 = moment({ year: year + 1, month: 1, date: 28 })
-//
-//   accrued = DayCounter.accrued(dt1, dt2)
-//   t.equal(accrued, 360, `1 year non-leap accrued (accrued: ${ accrued })`)
-//
-//   // eom eom
-//   let [m1, m2] = randomInts({ length: 2, min: 0, max: 11 })
-//   year = Calendar.randomYear({ leap: false })
-//
-//   dt1 = moment({ year, month: m1, date: Calendar.daysInMonth(m1) })
-//   dt2 = moment({ year, month: m2, date: Calendar.daysInMonth(m2) })
-//
-//   accrued = DayCounter.accrued(dt1, dt2)
-//   let result = (m2 - m1) * 30
-//   t.equal(accrued, result, `same year EOM accrued (accrued: ${ accrued }, result: ${ result })`)
-// })
-//
-// test('not leap', function(t) {
-//   t.plan(4)
-//
-//   let month = Calendar.randomMonth()
-//   let endM = Calendar.daysInMonth(month)
-//   let year1 = Calendar.randomYear({ leap: false })
-//
-//   // same year, same month, dt1 dt2
-//   let d1 = Calendar.randomDay({ month, leap: false, eom: false })
-//   let d2 = Calendar.randomDay({ month, leap: false, min: d1, eom: false })
-//   let dt1 = moment({ year: year1, month, date: d1 })
-//   let dt2 = moment({ year: year1, month, date: d2 })
-//
-//   // same year, different month, dt1 dt2
-//
-//   let accrued = DayCounter.accrued(dt1, dt2)
-//   let result = moment.duration(dt2.diff(dt1)).asDays()
-//   t.equal(accrued, result, `same year, dt1 dt2 (accrued: ${ accrued }, result: ${ result })`)
-//
-//   // same year, same month, dt1:bom dt2:eom
-//   dt1.date(1)
-//   dt2.date(endM)
-//   accrued = DayCounter.accrued(dt1, dt2)
-//   result = endM - 1
-//   t.equal(accrued, result, `same year, dt1:bom dt2:eom (accrued: ${ accrued }, result: ${ result })`)
-//
-//   // same year, different month, dt1:eom dt2:eom
-//
-//   // different year, same month, dt1 dt2
-//   let year2 = Calendar.randomYear({ leap: false, exclude: year1 })
-//   year2 > year1 ? dt2.year(year2) : dt1.year(year2)
-//
-//   d2 = Calendar.randomDay({ month, leap: false, eom: false })
-//   d1 = Calendar.randomDay({ month, leap: false, eom: false })
-//   if (year2 > year1) {
-//     dt2 = moment({ year: year2, month, date: d2 })
-//     dt1 = moment({ year: year1, month, date: d1 })
-//   } else {
-//     dt2 = moment({ year: year1, month, date: d2 })
-//     dt1 = moment({ year: year2, month, date: d1 })
-//   }
-//
-//   accrued = DayCounter.accrued(dt1, dt2)
-//   result = (dt2.year() - dt1.year()) * 360 + dt2.date() - dt1.date()
-//   t.equal(accrued, result, `different year, dt1 dt2 (accrued: ${ accrued }, result: ${ result })`)
-//
-//   // different year, different month, dt1 dt2
-//   // different year, same month, dt1 dt2:eom
-//   // different year, different month, dt1 dt2:eom
-//
-//   // different year, same month, dt1:eom dt2
-//   dt1.date(endM)
-//   accrued = DayCounter.accrued(dt1, dt2)
-//   result = (dt2.year() - dt1.year()) * 360 + dt2.date() - dt1.date() + 1
-//   t.equal(accrued, result, `different year, dt1:eom dt2 (accrued: ${ accrued }, result: ${ result })`)
-//
-//   // different year, different month, dt1:eom dt2
-//   // different year, same month, dt1:eom dt2:eom
-//   // different year, different month, dt1:eom dt2:eom
-// })
-//
-// test('leap', function(t) {
-//   t.plan(7)
-//
-//   // same year, same month, dt1 dt2:leap
-//   // same year, different month, dt1 dt2:leap
-//
-//   // different year, same month, dt1 dt2:leap
-//   // different year, same month, dt1:leap dt2
-//   // different year, same month, both leap
-//
-//   // different year, different month, dt1 dt2:leap
-//   // different year, different month, dt1:leap dt2
-// })
+      let expected = (m2 - dt1.month()) * 30
+      let result = DayCounter.monthVar(dt1, dt2)
+      t.equal(result, expected)
+    }
+  },
+  {
+    msg: 'both feb eom1',
+    code: (t) => {
+      t.plan(1)
+      let dt1 = moment({ year: 2021, month: 1, date: 28 })
+      let dt2 = moment({ year: 2022, month: 1, date: 15 })
+
+      let expected = (dt2.year() - dt1.year()) * 360 + dt2.date() - 30
+      let result = DayCounter.accrued(dt1, dt2)
+      t.equal(result, expected)
+    }
+  },
+  {
+    msg: 'both feb eom1 (dt1 leap)',
+    code: (t) => {
+      t.plan(1)
+      let dt1 = moment({ year: 2020, month: 1, date: 29 })
+      let dt2 = moment({ year: 2021, month: 1, date: 15 })
+
+      let expected = (dt2.year() - dt1.year()) * 360 + dt2.date() - 30
+      let result = DayCounter.accrued(dt1, dt2)
+      t.equal(result, expected)
+    }
+  },
+  {
+    msg: 'both feb eom2',
+    code: (t) => {
+      t.plan(1)
+      let dt1 = moment({ year: 2021, month: 1, date: 13 })
+      let dt2 = moment({ year: 2022, month: 1, date: 28 })
+
+      let expected = (dt2.year() - dt1.year()) * 360 + dt2.date() - dt1.date()
+      let result = DayCounter.accrued(dt1, dt2)
+      t.equal(result, expected)
+    }
+  },
+  {
+    msg: 'both feb eom2 (dt2 leap)',
+    code: (t) => {
+      t.plan(1)
+      let dt1 = moment({ year: 2021, month: 1, date: 17 })
+      let dt2 = moment({ year: 2024, month: 1, date: 29 })
+
+      let expected = (dt2.year() - dt1.year()) * 360 + dt2.date() - dt1.date()
+      let result = DayCounter.accrued(dt1, dt2)
+      t.equal(result, expected)
+    }
+  },
+  {
+    msg: 'both feb eom1 eom2 (dt1 leap)',
+    code: (t) => {
+      t.plan(1)
+      let dt1 = moment({ year: 2020, month: 1, date: 29 })
+      let dt2 = moment({ year: 2021, month: 1, date: 28 })
+
+      let expected = (dt2.year() - dt1.year()) * 360
+      let result = DayCounter.accrued(dt1, dt2)
+      t.equal(result, expected)
+    }
+  },
+  {
+    msg: 'both feb eom1 eom2 (dt2 leap)',
+    code: (t) => {
+      t.plan(1)
+      let dt1 = moment({ year: 2021, month: 1, date: 28 })
+      let dt2 = moment({ year: 2024, month: 1, date: 29 })
+
+      let expected = (dt2.year() - dt1.year()) * 360
+      let result = DayCounter.accrued(dt1, dt2)
+      t.equal(result, expected)
+    }
+  },
+  {
+    msg: 'both feb eom1 eom2 (dt1 dt2 leap)',
+    code: (t) => {
+      t.plan(1)
+      let dt1 = moment({ year: 2020, month: 1, date: 29 })
+      let dt2 = moment({ year: 2024, month: 1, date: 29 })
+
+      let expected = (dt2.year() - dt1.year()) * 360
+      let result = DayCounter.accrued(dt1, dt2)
+      t.equal(result, expected)
+    }
+  },
+  {
+    msg: 'd2: 31 d1: (31 || 30)',
+    code: (t) => {
+      t.plan(2)
+      let dt1 = moment({ year: 2020, month: 9, date: 31 })
+      let dt2 = moment({ year: 2025, month: 11, date: 31 })
+      let dt3 = moment({ year: 2025, month: 10, date: 30 })
+
+      let expected1 = (dt2.year() - dt1.year()) * 360 + (dt2.month() - dt1.month()) * 30
+      let result1 = DayCounter.accrued(dt1, dt2)
+
+      let expected2 = (dt3.year() - dt1.year()) * 360 + (dt3.month() - dt1.month()) * 30
+      let result2 = DayCounter.accrued(dt1, dt3)
+
+      t.equal(result1, expected1)
+      t.equal(result2, expected2)
+    }
+  },
+  {
+    msg: 'd1: 31 d2: 29 (dt2 leap)',
+    code: (t) => {
+      t.plan(1)
+      let dt1 = moment({ year: 2020, month: 9, date: 31 })
+      let dt2 = moment({ year: 2024, month: 1, date: 29 })
+
+      let expected = (dt2.year() - dt1.year()) * 360 + (dt2.month() - dt1.month()) * 30 + dt2.date() - 30
+      let result = DayCounter.accrued(dt1, dt2)
+      t.equal(result, expected)
+    }
+  },
+  {
+    msg: 'd2: !eom d1: 30',
+    code: (t) => {
+      t.plan(1)
+      let dt1 = moment({ year: 2020, month: 10, date: 30 })
+      let dt2 = moment({ year: 2025, month: 1, date: 12 })
+
+      let expected = (dt2.year() - dt1.year()) * 360 + (dt2.month() - dt1.month()) * 30 + dt2.date() - dt1.date()
+      let result = DayCounter.accrued(dt1, dt2)
+      t.equal(result, expected)
+    }
+  }
+]
+
+tests.forEach(t => test(t.msg, t.code))

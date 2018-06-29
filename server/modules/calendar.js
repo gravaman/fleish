@@ -12,7 +12,7 @@ const MONTHS = {
 let Calendar = {
   has31: (month) => MONTHS.DAYS_31.includes(month),
   has30: (month) => MONTHS.DAYS_30.includes(month),
-  isEndOfMonth: (d, { month }) => {
+  isEndOfMonth: (d, { month } = {}) => {
     return month ? d.month() === month && d.date() === d.daysInMonth() : d.date() === d.daysInMonth()
   },
   isLeapYear: (year) => moment([year]).isLeapYear(),
@@ -49,12 +49,19 @@ let Calendar = {
     }
     return year
   },
-  randomMonth: ({ min = 0, length = 11, leap = true } = {}) => {
+  randomMonth: ({ min = 0, length = 11, leap = true, exclude = null } = {}) => {
     let mos = Range({ start: min + 1, length })
     if (!leap) {
       mos = mos.filter(month => month !== 1)
     }
-    return selectRandom(mos)
+
+    let month = selectRandom(Range({ start: min, length }))
+    let k = 0
+    while (month === exclude && k < 100) {
+      month = selectRandom(Range({ start: min, length }))
+      k++
+    }
+    return month
   },
   randomDay: (month, { leap = month === 1, min = 1, max = Calendar.daysInMonth(month, month === 1), eom = true, length } = {}) => {
     length = Calendar.daysInMonth(month, leap)
