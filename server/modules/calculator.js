@@ -12,6 +12,7 @@ const newtRootCode = math.parse('x0 - y / dy').compile()
 const stableCode = math.parse('abs(x1 - x0) <= theta').compile()
 const compoundMCode = math.parse('m * (e^(rc / m) - 1)').compile()
 const continuousMCode = math.parse('m * log(1 + rm / m)').compile()
+const mDurationCode = math.parse('waPvs / px / (1 + y / m)').compile()
 
 function biggify(args) {
   if (Array.isArray(args)) {
@@ -55,6 +56,10 @@ let Calculator = {
   continuousM({ ...args }) {
     let { m, rm } = biggify(args)
     return continuousMCode.eval({ m, rm })
+  },
+  mDuration({ ...args }) {
+    let { waPvs, px, y, m } = biggify(args)
+    return mDurationCode.eval({ waPvs, px, y, m })
   },
   neg(num) {
     num = math.bignumber(num)

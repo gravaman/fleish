@@ -3,11 +3,11 @@ let moment = require('moment')
 let math = require('mathjs')
 let CashFlow = require('../../modules/cashFlow')
 let Periods = require('../../modules/periods')
-let Durationer = require('../../modules/durationer')
 let Calc = require('../../modules/calculator')
-let { yld } = require('../../modules/yielder')
 let Pver = require('../../modules/pver')
 let Payment = require('../../modules/payment')
+let { mDuration } = require('../../modules/duration')
+let { yld } = require('../../modules/yielder')
 
 function getCf(r, cleanPx, exit) {
   let periods = Periods({ exit })
@@ -40,7 +40,7 @@ let tests = [
       let cf = getCf(r, cleanPx, exit)
       let pvs = getPvs(cf, r, m)
 
-      let result = Durationer.duration(cleanPx, r, m, pvs)
+      let result = mDuration({ px: cleanPx, y: r, m, pvs })
       result = math.format(result, 2)
       let expected = 1
       t.equal(result, expected.toString())
@@ -58,7 +58,7 @@ let tests = [
       let exit = today.add(365, 'days')
       let cf = getCf(r, cleanPx, exit)
       let pvs = getPvs(cf, r, m)
-      let result = Durationer.duration(cleanPx, r, m, pvs)
+      let result = mDuration({ px: cleanPx, y:r, m, pvs })
 
       result = math.round(result, 3)
       let expected = 0.928
@@ -80,7 +80,7 @@ let tests = [
       let exit = today.add(365, 'days')
       let cf = getCf(r, cleanPx, exit)
       let pvs = getPvs(cf, r, m)
-      let mD = Durationer.duration(cleanPx, r, m, pvs)
+      let mD = mDuration({px: cleanPx, y:r, m, pvs })
 
       let b0 = pvs.reduce((acc, pv) => Calc.add(acc, pv.amount), 0)
       let b1 = Calc.multiply(b0, Calc.subtract(1, Calc.multiply(mD, dy)))
