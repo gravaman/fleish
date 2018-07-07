@@ -1,16 +1,16 @@
 let Calendar = require('./calendar')
 let Calculator = require('./calculator')
 
-function weightPmts(pmts) {
-  return pmts.reduce((acc, pmt) => {
-    let tc = Calculator.multiply(pmt.amount, pmt.timeFromNow())
+function weightPmts(pvs) {
+  return pvs.reduce((acc, pv) => {
+    let tc = Calculator.multiply(pv.amount, pv.timeFromNow())
     return Calculator.add(acc, tc)
   }, 0)
 }
 
 let Durationer = {
-  getDuration: (px, pmts) => {
-    return weightPmts(pmts) / px
+  duration: (px, y, m, pvs) => {
+    return weightPmts(pvs) / px / (1 + y / m)
   }
 }
 
