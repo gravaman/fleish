@@ -8,6 +8,7 @@ function weightPmts(pvs) {
   }, 0)
 }
 
+// pass rm, fvs, calc pvs based on rc
 function mDuration({ ... args }) {
   let { px, y, m, pvs } = args
   return Calculator.mDuration({ waPvs: weightPmts(pvs), px, y, m })
@@ -16,11 +17,3 @@ function mDuration({ ... args }) {
 module.exports = {
   mDuration
 }
-
-// let Durationer = {
-//   duration: (px, y, m, pvs) => {
-//     return Calculator.mDuration({ waPvs: weightPmts(pvs), px, y, m })
-//   }
-// }
-//
-// module.exports = Durationer

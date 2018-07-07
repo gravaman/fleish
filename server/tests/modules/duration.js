@@ -4,23 +4,12 @@ let CashFlow = require('../../modules/cashFlow')
 let Periods = require('../../modules/periods')
 let Calc = require('../../modules/calculator')
 let Payment = require('../../modules/payment')
+let { getPvs } = require('../../modules/pver')
 let { mDuration } = require('../../modules/duration')
 
 function getCf(r, cleanPx, exit) {
   let periods = Periods({ exit })
   return CashFlow({ periods, r, cleanPx })
-}
-
-function getPvs(cf, rm, frequency) {
-  let rc = Calc.continuousM({ m: frequency, rm })
-
-  return cf.fvs.map(fv => {
-    return Payment({
-      date: fv.date,
-      coupon: Calc.pv({ fv: fv.coupon, r: rc, t: fv.timeFromNow() }),
-      principal: Calc.pv({ fv: fv.principal, r: rc, t: fv.timeFromNow() })
-    })
-  })
 }
 
 let tests = [
@@ -35,7 +24,7 @@ let tests = [
       let exit = today.add(366, 'days')
 
       let cf = getCf(r, px, exit)
-      let pvs = getPvs(cf, r, m)
+      let pvs = getPvs({ fvs: cf.fvs, rm: r, m })
 
       let result = Calc.round(mDuration({ px, y: r, m, pvs }), 2)
       let expected = 1
@@ -53,7 +42,7 @@ let tests = [
       let today = moment()
       let exit = today.add(365, 'days')
       let cf = getCf(r, px, exit)
-      let pvs = getPvs(cf, r, m)
+      let pvs = getPvs({ fvs: cf.fvs, rm: r, m })
 
       let result = Calc.round(mDuration({ px, y:r, m, pvs }))
       let expected = 0.928
@@ -74,13 +63,13 @@ let tests = [
       let today = moment()
       let exit = today.add(365, 'days')
       let cf = getCf(r, px, exit)
-      let pvs = getPvs(cf, r, m)
+      let pvs = getPvs({ fvs: cf.fvs, rm: r, m })
       let mD = mDuration({px, y:r, m, pvs })
 
       let b0 = pvs.reduce((acc, pv) => Calc.add(acc, pv.amount), 0)
       let b1 = Calc.multiply(b0, Calc.subtract(1, Calc.multiply(mD, dy)))
 
-      let pvs2 = getPvs(cf, r2, m)
+      let pvs2 = getPvs({ fvs: cf.fvs, rm: r2, m })
       let npv2 = pvs2.reduce((acc, pv) => Calc.add(acc, pv.amount), 0)
 
       let result = Calc.round(b1)
