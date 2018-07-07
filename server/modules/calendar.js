@@ -1,5 +1,6 @@
 let moment = require('moment')
 let { Range, selectRandom, randomInclusive } = require('./utilities')
+let Calculator = require('./calculator')
 
 const MONTHS = {
   ALL: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
@@ -26,6 +27,9 @@ let Calendar = {
       return 30
     }
     return leap ? 29 : 28
+  },
+  yearsFromToday: (dt) => {
+    return Calculator.divide(dt.diff(moment(), 'days'), 365)
   },
   mToString: (m) => ('0' + m).slice(-2),
   randomYear: ({ min = moment().year(), length = 10, leap = true, exclude = null } = {}) => {

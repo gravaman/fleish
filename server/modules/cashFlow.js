@@ -1,9 +1,37 @@
 let moment = require('moment')
 let Calc = require('./calculator')
+let Calendar = require('./calendar')
 let DayCounter = require('./dayCounter')
 
-function Payment({ date, coupon = 0, principal = 0 }) {
-  return { date, coupon, principal }
+let Payment = {
+  setState: function(update) {
+    Object.assign(this.state, update)
+  },
+  get date() {
+    return this.state.date
+  },
+  get coupon() {
+    return this.state.coupon
+  },
+  get principal() {
+    return this.state.principal
+  },
+  get amount() {
+    return Calc.add(this.state.coupon, this.state.principal)
+  },
+  timeFromNow: function() {
+    return Calendar.yearsFromToday(this.state.date)
+  }
+}
+
+function PaymentFactory({ date, coupon = 0, principal = 0 }) {
+  let pmt = Object.create(Payment)
+  pmt.state = {
+    date,
+    coupon,
+    principal
+  }
+  return pmt
 }
 
 let CashFlow = {
@@ -34,8 +62,7 @@ let CashFlow = {
     let { periods, pmts } = this.state
     pmts = pmts.slice()
     let entryPx = this.dirtyPx()
-
-    let entry = Payment({
+    let entry = PaymentFactory({
       date: moment(periods.first),
       principal: Calc.neg(entryPx)
     })
@@ -55,7 +82,7 @@ let CashFlow = {
     let { r, frequency, notional, pmts } = this.state
     pmts = pmts.slice()
 
-    let pmt = Payment({
+    let pmt = PaymentFactory({
       coupon: Calc.couponPmt({ t: factor, r, m: frequency, p: notional }),
       date
     })
@@ -65,9 +92,12 @@ let CashFlow = {
   get pmts() {
     return this.state.pmts
   },
+  get fvs() {
+    return this.state.pmts.slice(1)
+  },
   set exit(px) {
     let pmt = this.last
-    pmt.principal = px
+    pmt.setState({ principal: px })
   },
   get first() {
     let { pmts } = this.state
