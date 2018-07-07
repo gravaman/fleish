@@ -31,34 +31,34 @@ let tests = [
     msg: 'D === 1 when r is 0',
     code: (t) => {
       t.plan(1)
-      let cleanPx = 100
+      let px = 100
       let r = 0
       let m = 2
       let today = moment()
       let exit = today.add(366, 'days')
 
-      let cf = getCf(r, cleanPx, exit)
+      let cf = getCf(r, px, exit)
       let pvs = getPvs(cf, r, m)
 
-      let result = mDuration({ px: cleanPx, y: r, m, pvs })
+      let result = mDuration({ px, y: r, m, pvs })
       result = math.format(result, 2)
       let expected = 1
       t.equal(result, expected.toString())
     }
   },
   {
-    msg: 'D === 0.928 when r: 0.1, m:2, cleanPx: 100, maturity: 1yr',
+    msg: 'D === 0.928 when r: 0.1, m:2, px: 100, maturity: 1yr',
     code: (t) => {
       t.plan(1)
 
-      let cleanPx = 100
+      let px = 100
       let r = 0.1
       let m = 2
       let today = moment()
       let exit = today.add(365, 'days')
-      let cf = getCf(r, cleanPx, exit)
+      let cf = getCf(r, px, exit)
       let pvs = getPvs(cf, r, m)
-      let result = mDuration({ px: cleanPx, y:r, m, pvs })
+      let result = mDuration({ px, y:r, m, pvs })
 
       result = math.round(result, 3)
       let expected = 0.928
@@ -71,16 +71,16 @@ let tests = [
     code: (t) => {
       t.plan(1)
 
-      let cleanPx = 100
+      let px = 100
       let r = 0.1
       let dy = 0.001
       let r2 = r + dy
       let m = 2
       let today = moment()
       let exit = today.add(365, 'days')
-      let cf = getCf(r, cleanPx, exit)
+      let cf = getCf(r, px, exit)
       let pvs = getPvs(cf, r, m)
-      let mD = mDuration({px: cleanPx, y:r, m, pvs })
+      let mD = mDuration({px, y:r, m, pvs })
 
       let b0 = pvs.reduce((acc, pv) => Calc.add(acc, pv.amount), 0)
       let b1 = Calc.multiply(b0, Calc.subtract(1, Calc.multiply(mD, dy)))
