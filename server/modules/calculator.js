@@ -61,10 +61,6 @@ let Calculator = {
     let { waPvs, px, y, m } = biggify(args)
     return mDurationCode.eval({ waPvs, px, y, m })
   },
-  neg(num) {
-    num = math.bignumber(num)
-    return math.unaryMinus(num)
-  },
   add(...args) {
     let [ num0, num1 ] = biggify(args)
     return math.add(num0, num1)
@@ -80,6 +76,14 @@ let Calculator = {
   divide(...args) {
     let [ dividend, divisor ] = biggify(args)
     return math.divide(dividend, divisor)
+  },
+  neg(num) {
+    num = math.bignumber(num)
+    return math.unaryMinus(num)
+  },
+  round(num, digits = 3) {
+    num = math.bignumber(num)
+    return math.round(num, digits)
   }
 }
 

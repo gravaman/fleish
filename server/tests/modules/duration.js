@@ -1,13 +1,10 @@
 let test = require('tape')
 let moment = require('moment')
-let math = require('mathjs')
 let CashFlow = require('../../modules/cashFlow')
 let Periods = require('../../modules/periods')
 let Calc = require('../../modules/calculator')
-let Pver = require('../../modules/pver')
 let Payment = require('../../modules/payment')
 let { mDuration } = require('../../modules/duration')
-let { yld } = require('../../modules/yielder')
 
 function getCf(r, cleanPx, exit) {
   let periods = Periods({ exit })
@@ -40,10 +37,9 @@ let tests = [
       let cf = getCf(r, px, exit)
       let pvs = getPvs(cf, r, m)
 
-      let result = mDuration({ px, y: r, m, pvs })
-      result = math.format(result, 2)
+      let result = Calc.round(mDuration({ px, y: r, m, pvs }), 2)
       let expected = 1
-      t.equal(result, expected.toString())
+      t.equal(result.toString(), expected.toString())
     }
   },
   {
@@ -58,9 +54,8 @@ let tests = [
       let exit = today.add(365, 'days')
       let cf = getCf(r, px, exit)
       let pvs = getPvs(cf, r, m)
-      let result = mDuration({ px, y:r, m, pvs })
 
-      result = math.round(result, 3)
+      let result = Calc.round(mDuration({ px, y:r, m, pvs }))
       let expected = 0.928
 
       t.equal(result.toString(), expected.toString())
@@ -88,8 +83,9 @@ let tests = [
       let pvs2 = getPvs(cf, r2, m)
       let npv2 = pvs2.reduce((acc, pv) => Calc.add(acc, pv.amount), 0)
 
-      let result = math.round(b1, 3)
-      let expected = math.round(npv2, 3)
+      let result = Calc.round(b1)
+      let expected = Calc.round(npv2)
+
       t.equal(result.toString(), expected.toString())
     }
   }
