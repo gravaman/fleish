@@ -1,5 +1,6 @@
 let Calendar = require('./calendar')
 let Calculator = require('./calculator')
+let { getPv, getPvs } = require('./pver')
 
 function weightPmts(pvs) {
   return pvs.reduce((acc, pv) => {
@@ -8,11 +9,14 @@ function weightPmts(pvs) {
   }, 0)
 }
 
-// pass rm, fvs, calc pvs based on rc
 function mDuration({ ... args }) {
-  let { px, y, m, pvs } = args
-  return Calculator.mDuration({ waPvs: weightPmts(pvs), px, y, m })
+  let { px, rm, m, fvs } = args
+  let pvs = getPvs({ fvs, rm, m })
+  return Calculator.mDuration({ waPvs: weightPmts(pvs), px, y: rm, m })
 }
+
+// macD
+// modD
 
 module.exports = {
   mDuration

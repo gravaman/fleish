@@ -3,6 +3,7 @@ let Calc = require('./calculator')
 let CashFlow = require('./cashFlow')
 let Periods = require('./periods')
 let DayCounter = require('./dayCounter')
+let Pver = require('./pver')
 
 function yld({ r, cleanPx, redemptionPx = 100, notional = 100, settlement = moment(), exit, frequency = 2, convention = DayCounter.Conventions.US_30_360 }) {
   let periods = Periods({ settlement, exit, frequency })
@@ -13,7 +14,11 @@ function yld({ r, cleanPx, redemptionPx = 100, notional = 100, settlement = mome
   let x0 = r
   let x1 = x0
   while (!stable && k < 1000) {
-    x1 = Calc.newtRoot({ x0, y: npv(cf, x0), dy: npvdx(cf, x0) })
+    x1 = Calc.newtRoot({
+      x0,
+      y: Pver.npv(cf.fvs, x0, cf.first),
+      dy: Pver.npvdx(cf.fvs, x0, cf.first)
+    })
     stable = Calc.stable({ x1, x0, theta: 0.00001 })
     k++
     x0 = x1
@@ -23,36 +28,9 @@ function yld({ r, cleanPx, redemptionPx = 100, notional = 100, settlement = mome
   return Calc.compoundM({ m: frequency, rc: x1 })
 }
 
-function npv(cf, r) {
-  function pv(pmt, r) {
-    let { fv, t } = pvPrep(pmt)
-    return Calc.pv({ fv, t, r })
-  }
-
-  let pmts = cf.pmts.slice(1)
-  return  pmts.reduce((acc, pmt) => Calc.add(acc, pv(pmt, r)), cf.first.principal)
-}
-
-function npvdx(cf, r) {
-  function pvdx(pmt, r) {
-    let { fv, t } = pvPrep(pmt)
-    return Calc.pvdx({ fv, t, r })
-  }
-
-  let pmts = cf.pmts.slice(1)
-  return pmts.reduce((acc, pmt) => Calc.add(acc, pvdx(pmt, r)), 0)
-}
-
-function pvPrep(pmt) {
-  let accrued = pmt.date.diff(moment(), 'days')
-  let t = Calc.divide(accrued, 365)
-  let fv = Calc.add(pmt.coupon, pmt.principal)
-  return { fv, t }
-}
-
 if (require.main === module) {
-  let settlement = moment({ year: 2018, month: 5, date: 28 })
-  let exit = moment({ year: 2023, month: 5, date: 28 })
+  let settlement = moment({ year: 2018, month: 6, date: 8 })
+  let exit = moment({ year: 2023, month: 6, date: 8 })
   let r = 0.055
   let cleanPx = 100
 

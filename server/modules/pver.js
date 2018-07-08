@@ -1,12 +1,16 @@
+let moment = require('moment')
 let Calc = require('./calculator')
 let Payment = require('./payment')
 
 let Pver = {
-  npv: function(pmts, r) {
-    return pmts.reduce((acc, pmt) => {
-      let pv = Calc.pv({ fv: pmt.amount, r, t: pmt.timeFromNow() })
-      return Calc.add(acc, pv)
-    }, 0)
+  npv: function(pmts, r, entry = Payment({ date: moment() })) {
+    return pmts.reduce((acc, pmt) => Calc.add(acc, Calc.pv({ fv: pmt.amount, r, t: pmt.timeFromNow() })), entry.amount)
+  },
+  npvdx: function(pmts, r, entry = Payment({ date: moment() })) {
+    return pmts.reduce((acc, pmt) => Calc.add(acc, Calc.pvdx({ fv: pmt.amount, r, t: pmt.timeFromNow() })), entry.amount)
+  },
+  getPv: function(fv, r) {
+    return Calc.pv({ fv: pmt.amount, r, t: pmt.timeFromNow() })
   },
   getPvs: function({ ...args }) {
     let { fvs, rm, m } = args

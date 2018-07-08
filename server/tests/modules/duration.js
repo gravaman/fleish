@@ -18,15 +18,15 @@ let tests = [
     code: (t) => {
       t.plan(1)
       let px = 100
-      let r = 0
+      let rm = 0
       let m = 2
       let today = moment()
       let exit = today.add(366, 'days')
 
-      let cf = getCf(r, px, exit)
-      let pvs = getPvs({ fvs: cf.fvs, rm: r, m })
+      let cf = getCf(rm, px, exit)
+      // let pvs = getPvs({ fvs: cf.fvs, rm: r, m })
 
-      let result = Calc.round(mDuration({ px, y: r, m, pvs }), 2)
+      let result = Calc.round(mDuration({ px, rm, m, fvs: cf.fvs }), 2)
       let expected = 1
       t.equal(result.toString(), expected.toString())
     }
@@ -37,14 +37,14 @@ let tests = [
       t.plan(1)
 
       let px = 100
-      let r = 0.1
+      let rm = 0.1
       let m = 2
       let today = moment()
       let exit = today.add(365, 'days')
-      let cf = getCf(r, px, exit)
-      let pvs = getPvs({ fvs: cf.fvs, rm: r, m })
+      let cf = getCf(rm, px, exit)
+      // let pvs = getPvs({ fvs: cf.fvs, rm: r, m })
 
-      let result = Calc.round(mDuration({ px, y:r, m, pvs }))
+      let result = Calc.round(mDuration({ px, rm, m, fvs: cf.fvs }))
       let expected = 0.928
 
       t.equal(result.toString(), expected.toString())
@@ -56,20 +56,20 @@ let tests = [
       t.plan(1)
 
       let px = 100
-      let r = 0.1
+      let rm = 0.1
       let dy = 0.001
-      let r2 = r + dy
+      let rm2 = rm + dy
       let m = 2
       let today = moment()
       let exit = today.add(365, 'days')
-      let cf = getCf(r, px, exit)
-      let pvs = getPvs({ fvs: cf.fvs, rm: r, m })
-      let mD = mDuration({px, y:r, m, pvs })
+      let cf = getCf(rm, px, exit)
+      let pvs = getPvs({ fvs: cf.fvs, rm, m })
+      let mD = mDuration({px, rm, m, fvs: cf.fvs })
 
       let b0 = pvs.reduce((acc, pv) => Calc.add(acc, pv.amount), 0)
       let b1 = Calc.multiply(b0, Calc.subtract(1, Calc.multiply(mD, dy)))
 
-      let pvs2 = getPvs({ fvs: cf.fvs, rm: r2, m })
+      let pvs2 = getPvs({ fvs: cf.fvs, rm: rm2, m })
       let npv2 = pvs2.reduce((acc, pv) => Calc.add(acc, pv.amount), 0)
 
       let result = Calc.round(b1)
