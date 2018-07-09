@@ -2,9 +2,9 @@ let Calendar = require('./calendar')
 let Calculator = require('./calculator')
 let { getPvs } = require('./pver')
 
-function weightPmts(pvs, order = 1) {
+function weightPmts(pvs, entry, order = 1) {
   return pvs.reduce((acc, pv) => {
-    let t = Calculator.multiply(order, pv.timeFromNow())
+    let t = Calculator.pow(pv.timeFromDate(entry.date), order)
     let tc = Calculator.multiply(t, pv.amount)
     return Calculator.add(acc, tc)
   }, 0)
@@ -13,14 +13,14 @@ function weightPmts(pvs, order = 1) {
 function calcMacD(props) {
   let { fvs, m, y, px, entry } = props
   let pvs = getPvs({ fvs, rm: y, m, entry })
-  let weighted = weightPmts(pvs, 1)
+  let weighted = weightPmts(pvs, entry, 1)
   return Calculator.divide(weighted, px)
 }
 
 function calcMacC(props) {
   let { fvs, m, y, px, entry } = props
   let pvs = getPvs({ fvs, rm: y, m, entry })
-  let weighted = weightPmts(pvs, 2)
+  let weighted = weightPmts(pvs, entry, 2)
   return Calculator.divide(weighted, px)
 }
 

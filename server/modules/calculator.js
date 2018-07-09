@@ -82,6 +82,10 @@ let Calculator = {
     let [ dividend, divisor ] = biggify(args)
     return math.divide(dividend, divisor)
   },
+  pow(...args) {
+    let [ base, exp ] = biggify(args)
+    return math.pow(base, exp)
+  },
   neg(num) {
     num = math.bignumber(num)
     return math.unaryMinus(num)
