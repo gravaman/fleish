@@ -12,19 +12,21 @@ let tests = [
     code: (t) => {
       t.plan(1)
 
-      let exit = moment().add(365, 'days')
+      let settlement = moment().add(2, 'days')
+      let exit = moment(settlement).add(365, 'days')
       let frequency = 1
       let rm = 0.1
       let rc = Calc.continuousM({ m: frequency, rm })
       let cleanPx = 100
 
-      let periods = Periods({ exit, frequency })
+      let periods = Periods({ settlement, exit, frequency })
       let cf = CashFlow({ periods, r: rm, cleanPx, frequency })
-      let fvs = cf.fvs
+      let { fvs, first } = cf
 
-      let result = math.format(Pver.npv(fvs, rc), 2)
-      let expected = cleanPx
-      t.equal(result, expected.toString())
+      let result = math.round(Pver.npv(fvs, rc, first), 3)
+      let expected = 0
+
+      t.equal(result.toString(), expected.toString())
     }
   }
 ]

@@ -13,7 +13,7 @@ function getCf(r, cleanPx, settlement, exit) {
 }
 
 function defaultHandler({ rm, m = 2, px = 100, trade = moment(), exit = moment().add(366, 'days') }) {
-  let settlement = trade.add(2, 'days')
+  let settlement = moment(trade).add(2, 'days')
   let { fvs, first } = getCf(rm, px, settlement, exit)
   return DurationFactory({ fvs, m, y: rm, px, entry: first })
 }

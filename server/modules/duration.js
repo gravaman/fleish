@@ -10,12 +10,6 @@ function weightPmts(pvs, order = 1) {
   }, 0)
 }
 
-// function mDuration({ ... args }) {
-//   let { px, rm, m, fvs } = args
-//   let pvs = getPvs({ fvs, rm, m })
-//   return Calculator.mDuration({ waPvs: weightPmts(pvs), px, y: rm, m })
-// }
-
 function calcMacD(props) {
   let { fvs, m, y, px, entry } = props
   let pvs = getPvs({ fvs, rm: y, m, entry })

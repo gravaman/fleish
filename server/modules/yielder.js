@@ -6,7 +6,7 @@ let DayCounter = require('./dayCounter')
 let Pver = require('./pver')
 
 function yld({ r, cleanPx, redemptionPx = 100, notional = 100, trade = moment(), exit, frequency = 2, convention = DayCounter.Conventions.US_30_360 }) {
-  let settlement = trade.add(2, 'days')
+  let settlement = moment(trade).add(2, 'days')
   let periods = Periods({ settlement, exit, frequency })
   let cf = CashFlow({ periods, r, cleanPx, redemptionPx, notional, convention })
 
