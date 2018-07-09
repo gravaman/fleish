@@ -6,6 +6,9 @@ let Pver = {
   npv: function(pmts, r, entry) {
     return pmts.reduce((acc, pmt) => Calc.add(acc, Calc.pv({ fv: pmt.amount, r, t: pmt.timeFromDate(entry.date) })), entry.amount)
   },
+  npvm: function(pmts, r, m, entry) {
+    return pmts.reduce((acc, pmt) => Calc.add(acc, Calc.pvm({ c: pmt.amount, y: r, k: m, t: pmt.timeFromDate(entry.date) })), entry.amount)
+  },
   npvdx: function(pmts, r, entry) {
     return pmts.reduce((acc, pmt) => Calc.add(acc, Calc.pvdx({ fv: pmt.amount, r, t: pmt.timeFromDate(entry.date) })), entry.amount)
   },

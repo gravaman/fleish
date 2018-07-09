@@ -41,7 +41,7 @@ let DurationHandler = {
     this.state = nextState
   },
   pxDelta(yDelta) {
-    let term1 = Calculator.multiply(this.px, this.modD, yDelta)
+    let term1 = Calculator.multiply(Calculator.neg(this.px), this.modD, yDelta)
     let term2 = Calculator.multiply(0.5, this.px, this.modC, Calculator.pow(yDelta, 2))
     return Calculator.add(term1, term2)
   },

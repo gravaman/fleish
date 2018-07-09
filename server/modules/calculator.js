@@ -75,8 +75,8 @@ let Calculator = {
     return math.subtract(num0, num1)
   },
   multiply(...args) {
-    let [num0, num1 ] = biggify(args)
-    return math.multiply(num0, num1)
+    let bigs = biggify(args)
+    return math.multiply(...bigs)
   },
   divide(...args) {
     let [ dividend, divisor ] = biggify(args)
