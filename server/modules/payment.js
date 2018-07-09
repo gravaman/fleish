@@ -22,6 +22,9 @@ let Payment = {
   },
   timeFromNow: function() {
     return Calendar.yearsFromToday(this.state.date)
+  },
+  timeFromDate: function(dt0) {
+    return Calendar.yearsFromDate(dt0, this.state.date)
   }
 }
 

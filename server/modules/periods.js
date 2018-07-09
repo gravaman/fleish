@@ -40,7 +40,7 @@ let Schedule = {
   }
 }
 
-function Periods({ settlement = moment(), exit, issuance = null, frequency = 2 }) {
+function Periods({ settlement, exit, issuance = null, frequency = 2 }) {
   let schedule = Object.create(Schedule)
   schedule.state = {
     settlement,

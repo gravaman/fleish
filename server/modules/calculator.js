@@ -7,6 +7,7 @@ math.config({
 
 const pvCode = math.parse('fv * e^-(r * t)').compile()
 const pvdxCode = math.parse('-fv * t * e^-(r*t)').compile()
+const pvmCode = math.parse('c*(1 + y/k)^-(k*t)').compile()
 const couponPmtCode = math.parse('t * r / m * p').compile()
 const newtRootCode = math.parse('x0 - y / dy').compile()
 const stableCode = math.parse('abs(x1 - x0) <= theta').compile()
@@ -36,6 +37,10 @@ let Calculator = {
   pvdx({ ...args }) {
     let { fv, r, t } = biggify(args)
     return pvdxCode.eval({ fv, r, t })
+  },
+  pvm({ ...args }) {
+    let { c, y, k, t } = biggify(args)
+    return pvmCode.eval({ c, y, k, t })
   },
   couponPmt({ ...args }) {
     let { t, r, m, p } = biggify(args)

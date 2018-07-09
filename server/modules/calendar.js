@@ -31,6 +31,9 @@ let Calendar = {
   yearsFromToday: (dt) => {
     return Calculator.divide(dt.diff(moment(), 'days'), 365)
   },
+  yearsFromDate: (dt0, dt1) => {
+    return Calculator.divide(dt1.diff(dt0, 'days'), 365)
+  },
   mToString: (m) => ('0' + m).slice(-2),
   randomYear: ({ min = moment().year(), length = 10, leap = true, exclude = null } = {}) => {
     let years = Range({ start: min, length })

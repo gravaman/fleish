@@ -5,7 +5,8 @@ let Periods = require('./periods')
 let DayCounter = require('./dayCounter')
 let Pver = require('./pver')
 
-function yld({ r, cleanPx, redemptionPx = 100, notional = 100, settlement = moment(), exit, frequency = 2, convention = DayCounter.Conventions.US_30_360 }) {
+function yld({ r, cleanPx, redemptionPx = 100, notional = 100, trade = moment(), exit, frequency = 2, convention = DayCounter.Conventions.US_30_360 }) {
+  let settlement = trade.add(2, 'days')
   let periods = Periods({ settlement, exit, frequency })
   let cf = CashFlow({ periods, r, cleanPx, redemptionPx, notional, convention })
 
@@ -29,12 +30,12 @@ function yld({ r, cleanPx, redemptionPx = 100, notional = 100, settlement = mome
 }
 
 if (require.main === module) {
-  let settlement = moment({ year: 2018, month: 6, date: 8 })
+  let trade = moment()
   let exit = moment({ year: 2023, month: 6, date: 8 })
   let r = 0.055
   let cleanPx = 100
 
-  let y1 = yld({ r, cleanPx, settlement, exit })
+  let y1 = yld({ r, cleanPx, trade, exit })
   console.log('yield:', y1.toString())
 } else {
   module.exports = { yld }
