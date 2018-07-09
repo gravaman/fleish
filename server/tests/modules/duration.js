@@ -78,6 +78,22 @@ let tests = [
 
       t.equal(result.toString(), expected.toString())
     }
+  },
+  {
+    msg: 'Modified Convexity Test',
+    code: (t) => {
+      t.plan(1)
+
+      let handler = defaultHandler()
+
+      let result = Calc.round(handler.modC)
+
+      let num = Calc.add(handler.macC, Calc.divide(handler.macD, defaultArgs.m))
+      let denom = Calc.pow(Calc.add(1, Calc.divide(defaultArgs.rm, defaultArgs.m)), 2)
+      let expected = Calc.round(Calc.divide(num, denom))
+
+      t.equal(result.toString(), expected.toString())
+    }
   }
   // {
   //   msg: 'B1 === B0 * (1 - Ddy)',
@@ -108,5 +124,8 @@ let tests = [
   //   }
   // }
 ]
+
+// test modC
+// test px chg
 
 tests.forEach(t => test(t.msg, t.code))
