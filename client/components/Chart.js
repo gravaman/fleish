@@ -2,6 +2,14 @@ import React, { Component } from 'react'
 import { VictoryChart, VictoryTheme, VictoryLine } from 'victory'
 import Styler from '../styler'
 
+
+const dataStyle = {
+  data: {
+    stroke: Styler.mainCharcoal,
+    strokeLinecap: 'round'
+  }
+}
+
 class Chart extends Component {
   render() {
     return (
@@ -9,7 +17,8 @@ class Chart extends Component {
         theme={ VictoryTheme.material }
       >
         <VictoryLine
-          style={{ data: { stroke: Styler.mainCharcoal } }}
+          interpolation='natural'
+          style={ dataStyle }
           data={ this.props.data }
         />
       </VictoryChart>
